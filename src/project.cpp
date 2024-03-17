@@ -15,12 +15,23 @@
 // Example:
 //  Project p{"projectIdent"};
 
+Project::Project(std::string ident)
+{
+
+    this->ident = ident;
+}
+
 // TODO Write a function, size, that takes no parameters and returns an unsigned
 // int of the number of Tasks in the Project contains.
 //
 // Example:
 //  Project p{"projectIdent"};
 //  auto size = p.size();
+
+unsigned int Project::size() const noexcept
+{
+    return;
+}
 
 // TODO Write a function, getIdent, that returns the identifier for the Project.
 //
@@ -90,7 +101,6 @@
 //  if(pObj1 == pObj2) {
 //    ...
 //  }
-
 
 // TODO Write a function, str, that takes no parameters and returns a
 // std::string of the JSON representation of the data in the Project.

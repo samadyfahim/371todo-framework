@@ -15,6 +15,15 @@
 // Example:
 //  Task tObj{"Task Name"};
 
+Task::Task(std::string ident)
+{
+    this->ident = ident;
+}
+
+Task::~Task()
+{
+}
+
 // TODO Write a function, getIdent, that returns the identifier for the Task.
 //
 // Example:

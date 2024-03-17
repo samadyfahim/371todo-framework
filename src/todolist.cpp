@@ -14,12 +14,24 @@
 // Example:
 //  TodoList tObj{};
 
+TodoList::TodoList()
+{
+}
+
+TodoList::~TodoList()
+{
+}
+
 // TODO Write a function, size, that takes no parameters and returns an unsigned
 //  int of the number of projects the TodoList contains.
 //
 // Example:
 //  TodoList tObj{};
 //  auto size = tObj.size();
+
+unsigned int TodoList::size() const
+{
+}
 
 // TODO Write a function, newProject, that takes one parameter, a project
 //  identifier, and returns the Project object as a reference. If an object
@@ -30,7 +42,6 @@
 // Example:
 //  TodoList tObj{};
 //  tObj.newProject("projectIdent");
-
 
 // TODO Write a function, addProject, that takes one parameter, a Project
 //  object, and returns true if the object was successfully inserted. If an
@@ -150,7 +161,6 @@
 //  if(tObj1 == tObj2) {
 //    ...
 //  }
-
 
 // TODO Write a function, str, that takes no parameters and returns a
 //  std::string of the JSON representation of the data in the TodoList.

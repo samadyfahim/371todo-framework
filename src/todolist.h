@@ -14,8 +14,14 @@
 #ifndef TODOLIST_H
 #define TODOLIST_H
 
-class TodoList {
-
+class TodoList
+{
+private:
+    /* data */
+public:
+    TodoList();
+    ~TodoList();
+    unsigned int size() const;
 };
 
 #endif // TODOLIST_H

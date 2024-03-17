@@ -15,9 +15,16 @@
 
 #ifndef TASK_H
 #define TASK_H
+#include <string>
 
-class Task {
+class Task
+{
+private:
+    std::string ident;
 
+public:
+    Task(std::string ident);
+    ~Task();
 };
 
 #endif // TASK_H

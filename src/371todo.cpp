@@ -33,12 +33,14 @@
 //
 // Example:
 //  int main(int argc, char *argv[]) { return App::run(argc, argv); }
-int App::run(int argc, char *argv[]) {
+int App::run(int argc, char *argv[])
+{
   auto options = App::cxxoptsSetup();
   auto args = options.parse(argc, argv);
 
   // Print the help usage if requested
-  if (args.count("help")) {
+  if (args.count("help"))
+  {
     std::cout << options.help() << '\n';
     return 0;
   }
@@ -51,25 +53,26 @@ int App::run(int argc, char *argv[]) {
   // tlObj.load(db);
 
   const Action a = parseActionArgument(args);
-  switch (a) {
-    case Action::CREATE:
-      throw std::runtime_error("create not implemented");
-      break;
+  switch (a)
+  {
+  case Action::CREATE:
+    throw std::runtime_error("create not implemented");
+    break;
 
-    case Action::JSON:
-      throw std::runtime_error("json not implemented");
-      break;
+  case Action::JSON:
+    throw std::runtime_error("json not implemented");
+    break;
 
-    case Action::UPDATE:
-      throw std::runtime_error("update not implemented");
-      break;
+  case Action::UPDATE:
+    throw std::runtime_error("update not implemented");
+    break;
 
-    case Action::DELETE:
-      throw std::runtime_error("delete not implemented");
-      break;
+  case Action::DELETE:
+    throw std::runtime_error("delete not implemented");
+    break;
 
-    default:
-      throw std::runtime_error("unknown action not implemented");
+  default:
+    throw std::runtime_error("unknown action not implemented");
   }
 
   return 0;
@@ -80,7 +83,8 @@ int App::run(int argc, char *argv[]) {
 // Example:
 //  auto options = App::cxxoptsSetup();
 //  auto args = options.parse(argc, argv);
-cxxopts::Options App::cxxoptsSetup() {
+cxxopts::Options App::cxxoptsSetup()
+{
   cxxopts::Options cxxopts("371todo", "Student ID: " + STUDENT_NUMBER + "\n");
 
   cxxopts.add_options()(
@@ -145,16 +149,27 @@ cxxopts::Options App::cxxoptsSetup() {
 //  auto options = App::cxxoptsSetup();
 //  auto args = options.parse(argc, argv);
 //  App::Action action = parseActionArgument(args);
-App::Action App::parseActionArgument(cxxopts::ParseResult &args) {
-// enum Action { CREATE, JSON, DELETE, UPDATE };
+App::Action App::parseActionArgument(cxxopts::ParseResult &args)
+{
+  //  enum Action { CREATE, JSON, DELETE, UPDATE };
   std::string input = args["action"].as<std::string>();
-  if(input == "create") {
+
+  std::transform(input.begin(), input.end(), input.begin(), ::tolower);
+
+  if (input == "create")
+  {
     return Action::CREATE;
-  } else if(input == "json") {
+  }
+  else if (input == "json")
+  {
     return Action::JSON;
-  } else if(input == "delete") {
+  }
+  else if (input == "delete")
+  {
     return Action::DELETE;
-  } else if(input == "update") {
+  }
+  else if (input == "update")
+  {
     return Action::UPDATE;
   }
   throw std::invalid_argument("action");
@@ -171,7 +186,8 @@ App::Action App::parseActionArgument(cxxopts::ParseResult &args) {
 // Example:
 //  TodoList tlObj{};
 //  std::cout << getJSON(tlObj);
-std::string App::getJSON(TodoList &tlObj) {
+std::string App::getJSON(TodoList &tlObj)
+{
   return "{}";
   // Only uncomment this once you have implemented the functions used!
   // return tlObj.str();
@@ -189,7 +205,8 @@ std::string App::getJSON(TodoList &tlObj) {
 //  TodoList tlObj{};
 //  std::string p = "project argument value";
 //  std::cout << getJSON(tlObj, p);
-std::string App::getJSON(TodoList &tlObj, const std::string &p) {
+std::string App::getJSON(TodoList &tlObj, const std::string &p)
+{
   return "{}";
   // Only uncomment this once you have implemented the functions used!
   // auto pObj = tlObj.getProject(p);
@@ -210,7 +227,8 @@ std::string App::getJSON(TodoList &tlObj, const std::string &p) {
 //  std::string t = "task argument value";
 //  std::cout << getJSON(tlObj, p, t);
 std::string App::getJSON(TodoList &tlObj, const std::string &p,
-                         const std::string &t) {
+                         const std::string &t)
+{
   return "{}";
   // Only uncomment this once you have implemented the functions used!
   // auto pObj = tlObj.getProject(p);
@@ -234,7 +252,8 @@ std::string App::getJSON(TodoList &tlObj, const std::string &p,
 //  std::string tag = "tag argument value";
 //  std::cout << getJSON(tlObj, p, task, tag);
 std::string App::getJSON(TodoList &tlObj, const std::string &p,
-                         const std::string &task, const std::string &tag) {
+                         const std::string &task, const std::string &tag)
+{
   return "{}";
   // Only uncomment this once you have implemented the functions used!
   // auto pObj = tlObj.getProject(p);
