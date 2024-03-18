@@ -23,7 +23,8 @@
 
 using TaskContainer = std::vector<Task>;
 
-class Project {
+class Project
+{
   std::string ident;
   TaskContainer tasks;
 
@@ -58,29 +59,35 @@ public:
   inline TaskContainer::const_iterator cend() const { return tasks.cend(); }
 
   inline TaskContainer::reverse_iterator rbegin() { return tasks.rbegin(); }
-  inline TaskContainer::const_reverse_iterator crbegin() const {
+  inline TaskContainer::const_reverse_iterator crbegin() const
+  {
     return tasks.crbegin();
   }
 
   inline TaskContainer::reverse_iterator rend() { return tasks.rend(); }
-  inline TaskContainer::const_reverse_iterator crend() const {
+  inline TaskContainer::const_reverse_iterator crend() const
+  {
     return tasks.crend();
   }
 };
 
-struct AddTaskError : public std::runtime_error {
+struct AddTaskError : public std::runtime_error
+{
   explicit AddTaskError(const std::string &tIdent)
       : std::runtime_error("could not add task with identifier '" + tIdent +
-                           "'") {
+                           "'")
+  {
     /* do nothing */
   }
 
   ~AddTaskError() override = default;
 };
 
-struct NoTaskError : public std::out_of_range {
+struct NoTaskError : public std::out_of_range
+{
   explicit NoTaskError(const std::string &tIdent)
-      : std::out_of_range("unknown task with identifier '" + tIdent + "'") {
+      : std::out_of_range("unknown task with identifier '" + tIdent + "'")
+  {
     /* do nothing */
   }
 

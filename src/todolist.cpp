@@ -7,6 +7,8 @@
 // Canvas: https://canvas.swansea.ac.uk/courses/44636
 // -----------------------------------------------------
 #include "todolist.h"
+#include "project.h"
+#include "date.h"
 
 // TODO Write a TodoList constructor that takes no parameters and constructs an
 //  empty todolist.
@@ -22,6 +24,11 @@ TodoList::~TodoList()
 {
 }
 
+TagContainer Task::getTags() const
+{
+    return tags;
+}
+
 // TODO Write a function, size, that takes no parameters and returns an unsigned
 //  int of the number of projects the TodoList contains.
 //
@@ -31,6 +38,7 @@ TodoList::~TodoList()
 
 unsigned int TodoList::size() const
 {
+    return projects.size();
 }
 
 // TODO Write a function, newProject, that takes one parameter, a project
@@ -42,6 +50,37 @@ unsigned int TodoList::size() const
 // Example:
 //  TodoList tObj{};
 //  tObj.newProject("projectIdent");
+
+Project &TodoList::newProject(const std::string &projectIdent)
+{
+    try
+    {
+        return findExistingProject(projectIdent);
+    }
+    catch (const std::runtime_error &)
+    {
+        projects.emplace_back(projectIdent);
+        return projects.back();
+    }
+}
+
+Project &TodoList::findExistingProject(const std::string &projectIdent)
+{
+    auto projectIterator = std::find_if(projects.begin(), projects.end(), [&projectIdent](const Project &p)
+                                        { return p.getIdent() == projectIdent; });
+
+    if (projectIterator != projects.end())
+    {
+        return *projectIterator;
+    }
+    else
+    {
+        throw std::runtime_error("the project with identifier '" + projectIdent + "' was not found");
+    }
+}
+
+// emplace construct element in place
+// try_emplce insert inplace if the key dosenot exist dose nothing otherwise
 
 // TODO Write a function, addProject, that takes one parameter, a Project
 //  object, and returns true if the object was successfully inserted. If an
@@ -55,6 +94,36 @@ unsigned int TodoList::size() const
 //  Project cObj{"projectIdent"};
 //  tObj.addProject(cObj);
 
+bool TodoList::addProject(const Project &project)
+{
+    auto projectIterator = std::find_if(projects.begin(), projects.end(), [&project](const Project &p)
+                                        { return p.getIdent() == project.getIdent(); });
+
+    if (projectIterator != projects.end())
+    {
+        mergeProjectTasks(*projectIterator, project);
+        return false;
+    }
+    else
+    {
+        insertNewProject(project);
+        return true;
+    }
+}
+
+void TodoList::mergeProjectTasks(Project &existingProject, const Project &newProject)
+{
+    for (const auto &task : newProject.getTasks())
+    {
+        existingProject.addTask(task);
+    }
+}
+
+void TodoList::insertNewProject(const Project &project)
+{
+    projects.push_back(project);
+}
+
 // TODO Write a function, getProject, that takes one parameter, a Project
 //  identifier and returns the Project. If no Project exists, throw an
 //  appropriate exception.
@@ -64,6 +133,21 @@ unsigned int TodoList::size() const
 //  tObj.newProject("projectIdent");
 //  auto cObj = tObj.getProject("projectIdent");
 
+Project &TodoList::getProject(const std::string &projectIdent)
+{
+    auto projectIterator = std::find_if(projects.begin(), projects.end(), [&projectIdent](const Project &p)
+                                        { return p.getIdent() == projectIdent; });
+
+    if (projectIterator != projects.end())
+    {
+        return *projectIterator;
+    }
+    else
+    {
+        throw std::runtime_error("project not found");
+    }
+}
+
 // TODO Write a function, deleteProject, that takes one parameter, a Project
 //  identifier, and deletes it from the container, and returns true if the
 //  Project was deleted. If no Project exists, throw an appropriate exception.
@@ -72,6 +156,23 @@ unsigned int TodoList::size() const
 //  TodoList tObj{};
 //  tObj.newProject("projectIdent");
 //  tObj.deleteProject("projectIdent");
+
+bool TodoList::deleteProject(const std::string &projectIdent)
+{
+    auto projectIterator = std::find_if(projects.begin(), projects.end(), [&projectIdent](const Project &p)
+                                        { return p.getIdent() == projectIdent; });
+
+    if (projectIterator != projects.end())
+    {
+        projects.erase(projectIterator);
+        return true;
+    }
+    else
+    {
+        throw std::runtime_error("project not found");
+        return false;
+    }
+}
 
 // TODO Write a function, load, that takes one parameter, a std::string,
 //  containing the filename for the database. Open the file, read the contents,
@@ -142,15 +243,48 @@ unsigned int TodoList::size() const
 //  TodoList tObj{};
 //  tObj.load("database.json");
 
-// TODO Write a function, save, that takes one parameter, the path of the file
-//  to write the database to. The function should serialise the TodoList object
-//  as JSON.
-//
-// Example:
-//  TodoList tObj{};
-//  tObj.load("database.json");
-//  ...
-//  tObj.save("database.json");
+void TodoList::load(const std::string &filename)
+{
+    std::ifstream file(filename);
+    if (!file.is_open())
+    {
+        throw std::runtime_error("Failed to open file: " + filename);
+    }
+
+    nlohmann::json jsonData;
+    file >> jsonData;
+    file.close();
+
+    for (auto it = jsonData.begin(); it != jsonData.end(); ++it)
+    {
+        std::string projectName = it.key();
+        Project &project = newProject(projectName);
+
+        for (auto &taskData : it.value().items())
+        {
+            std::string taskName = taskData.key();
+            bool completed = taskData.value()["completed"];
+            std::string dueDateString = taskData.value()["due"];
+
+            Task task(taskName);
+            task.setComplete(completed);
+
+            if (!dueDateString.empty())
+            {
+                Date dueDate;
+                dueDate.setDateFromString(dueDateString);
+                task.setDueDate(dueDate);
+            }
+
+            for (const auto &tag : taskData.value()["tags"])
+            {
+                task.addTag(tag);
+            }
+
+            project.addTask(task);
+        }
+    }
+}
 
 // TODO Write an == operator overload for the TodoList class, such that two
 //  TodoList objects are equal only if they have the exact same data.
@@ -161,6 +295,10 @@ unsigned int TodoList::size() const
 //  if(tObj1 == tObj2) {
 //    ...
 //  }
+bool TodoList::operator==(const TodoList &other) const
+{
+    return projects == other.projects;
+}
 
 // TODO Write a function, str, that takes no parameters and returns a
 //  std::string of the JSON representation of the data in the TodoList.
@@ -171,3 +309,27 @@ unsigned int TodoList::size() const
 // Example:
 //  TodoList tObj{};
 //  std::string s = tObj.str();
+
+std::string TodoList::str() const
+{
+    nlohmann::json jsonData;
+
+    for (const auto &project : projects)
+    {
+        nlohmann::json projectData;
+
+        for (const auto &task : project.getTasks())
+        {
+            nlohmann::json taskData;
+            taskData["completed"] = task.isComplete();
+            taskData["due"] = task.getDueDate().str();
+            taskData["tags"] = task.getTags();
+
+            projectData[task.getIdent()] = taskData;
+        }
+
+        jsonData[project.getIdent()] = projectData;
+    }
+
+    return jsonData.dump(4);
+}

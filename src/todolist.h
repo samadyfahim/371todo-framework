@@ -14,14 +14,34 @@
 #ifndef TODOLIST_H
 #define TODOLIST_H
 
+#include "project.h"
+#include "task.h"
+#include <vector>
+#include <fstream>
+#include <iomanip>
+using ProjectContainer = std::vector<Project>;
+
 class TodoList
 {
 private:
-    /* data */
+    ProjectContainer projects;
+
+    Project &findExistingProject(const std::string &projectIdent);
+    void mergeProjectTasks(Project &existingProject, const Project &newProject);
+    void insertNewProject(const Project &project);
+
 public:
     TodoList();
     ~TodoList();
     unsigned int size() const;
+    Project &newProject(const std::string &projectIdent);
+    bool addProject(const Project &project);
+    Project &getProject(const std::string &projectIdent);
+    bool deleteProject(const std::string &projectIdent);
+    void load(const std::string &filename);
+    void save(const std::string &filename);
+    bool operator==(const TodoList &other) const;
+    std::string str() const;
 };
 
 #endif // TODOLIST_H

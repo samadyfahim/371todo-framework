@@ -18,16 +18,26 @@
 
 #ifndef DATE_H
 #define DATE_H
-
+#include <sstream>
 #include "lib_json.hpp"
 
-class Date {
+class Date
+{
 private:
   unsigned int year, month, day;
-  bool initialized;
+  bool initialised;
 
 public:
   Date();
+  void setDateFromString(const std::string &dateString);
+  bool isInitialised() const;
+  std::string str() const;
+  void setDate(int y, int m, int d);
+  unsigned int getYear() const;
+  unsigned int getMonth() const;
+  unsigned int getDay() const;
+  bool operator==(const Date &other) const;
+  bool operator<(const Date &other) const;
 };
 
-#endif // DATE_H
+#endif
