@@ -87,7 +87,7 @@ struct NoProjectError : public std::out_of_range
 struct FailedOpenFile : public std::runtime_error
 {
     explicit FailedOpenFile(const std::string &filename)
-        : std::runtime_error("Failed to open file " + filename)
+        : std::runtime_error("Failed to open file" + filename)
     {
         /* do nothing */
     }

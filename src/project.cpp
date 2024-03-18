@@ -64,24 +64,6 @@ void Project::setIdent(std::string pIdent) noexcept
 //  Project pObj{"projectIdent"};
 //  pObj.newTask("newTaskName");
 
-const TaskContainer &Project::getTasks() const noexcept
-{
-    return tasks;
-}
-
-// TODO Write a function, addTask, that takes one parameter, a Task object, and
-// returns true if the object was successfully inserted. If an object with the
-// same identifier already exists, then:
-//  - the tags should be merged
-//  - completed status overwritten by the task being added
-//  - dueDate overwritten by the task being added
-//  - false should be returned.
-//
-// Example:
-//  Project pObj{"projectIdent"};
-//  Task tObj{"taskIdent"};
-//  pObj.addItem(tObj);
-
 Task &Project::newTask(const std::string &tIdent)
 {
     auto it = findTask(tIdent);
@@ -96,30 +78,18 @@ Task &Project::newTask(const std::string &tIdent)
     }
 }
 
-TaskContainer::iterator Project::findTask(const std::string &tIdent)
-{
-    return std::find_if(tasks.begin(), tasks.end(),
-                        [&tIdent](const Task &task)
-                        { return task.getIdent() == tIdent; });
-}
-
-bool Project::containsTask(const std::string &tIdent) const noexcept
-{
-    return std::any_of(tasks.begin(), tasks.end(),
-                       [&tIdent](const Task &task)
-                       { return task.getIdent() == tIdent; });
-}
-// TODO Write a function, getTask, that takes one parameter, a Task identifier
-// (a string) and returns the Task as a reference. If no Task exists, throw an
-// appropriate exception.
-//
-// Hint:
-//  See the test scripts for the exception expected.
+// TODO Write a function, addTask, that takes one parameter, a Task object, and
+// returns true if the object was successfully inserted. If an object with the
+// same identifier already exists, then:
+//  - the tags should be merged
+//  - completed status overwritten by the task being added
+//  - dueDate overwritten by the task being added
+//  - false should be returned.
 //
 // Example:
 //  Project pObj{"projectIdent"};
-//  pObj.newTask("newTaskName");
-//  auto tObj = pObj.getTask("newTaskName");
+//  Task tObj{"taskIdent"};
+//  pObj.addItem(tObj);
 
 bool Project::addTask(Task task)
 {
@@ -139,6 +109,31 @@ bool Project::addTask(Task task)
     {
         tasks.push_back(std::move(task));
         return true;
+    }
+}
+
+// TODO Write a function, getTask, that takes one parameter, a Task identifier
+// (a string) and returns the Task as a reference. If no Task exists, throw an
+// appropriate exception.
+//
+// Hint:
+//  See the test scripts for the exception expected.
+//
+// Example:
+//  Project pObj{"projectIdent"};
+//  pObj.newTask("newTaskName");
+//  auto tObj = pObj.getTask("newTaskName");
+
+Task &Project::getTask(const std::string &tIdent)
+{
+    auto it = findTask(tIdent);
+    if (it != tasks.end())
+    {
+        return *it;
+    }
+    else
+    {
+        throw NoTaskError(tIdent);
     }
 }
 
@@ -163,19 +158,6 @@ bool Project::deleteTask(const std::string &tIdent)
     {
         throw std::out_of_range("Task not found");
         return false;
-    }
-}
-
-Task &Project::getTask(const std::string &tIdent)
-{
-    auto it = findTask(tIdent);
-    if (it != tasks.end())
-    {
-        return *it;
-    }
-    else
-    {
-        throw NoTaskError(tIdent);
     }
 }
 
@@ -222,5 +204,24 @@ nlohmann::json Project::json() const
 
 std::string Project::str() const
 {
-    return json().dump(4);
+    return json().dump();
+}
+
+TaskContainer::iterator Project::findTask(const std::string &tIdent)
+{
+    return std::find_if(tasks.begin(), tasks.end(),
+                        [&tIdent](const Task &task)
+                        { return task.getIdent() == tIdent; });
+}
+
+// bool Project::containsTask(const std::string &tIdent) const noexcept
+// {
+//     return std::any_of(tasks.begin(), tasks.end(),
+//                        [&tIdent](const Task &task)
+//                        { return task.getIdent() == tIdent; });
+// }
+
+const TaskContainer &Project::getTasks() const noexcept
+{
+    return tasks;
 }

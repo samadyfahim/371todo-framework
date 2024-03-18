@@ -16,7 +16,6 @@
 #ifndef TASK_H
 #define TASK_H
 #include <string>
-#include <vector>
 #include "date.h"
 
 using TagContainer = std::vector<std::string>;
@@ -32,11 +31,11 @@ public:
     Task(std::string ident);
     ~Task();
 
-    std::string getIdent() const;
-    void setIdent(const std::string &ident);
+    std::string getIdent() const noexcept;
+    void setIdent(const std::string &ident) noexcept;
     bool addTag(const std::string &tag);
     bool deleteTag(const std::string &tag);
-    unsigned int numTags() const;
+    unsigned int numTags() const noexcept;
     bool containsTag(const std::string &tag) const;
     Date getDueDate() const;
     void setDueDate(const Date &dueDate);
@@ -61,26 +60,10 @@ public:
     inline TagContainer::const_reverse_iterator crend() const { return tags.crend(); }
 };
 
-struct AddTagError : public std::runtime_error
+struct TagError : public std::out_of_range
 {
-    explicit AddTagError(const std::string &tagIdent)
-        : std::runtime_error("could not add tag with identifier '" + tagIdent + "'")
-    {
-        /* do nothing */
-    }
-
-    ~AddTagError() override = default;
-};
-
-struct NoTagError : public std::out_of_range
-{
-    explicit NoTagError(const std::string &tagIdent)
-        : std::out_of_range("unknown tag with identifier '" + tagIdent + "'")
-    {
-        /* do nothing */
-    }
-
-    ~NoTagError() override = default;
+    explicit TagError(const std::string &message) : std::out_of_range(message) {}
+    ~TagError() override = default;
 };
 
 #endif //

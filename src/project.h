@@ -13,7 +13,6 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-#include <map>
 #include <string>
 #include <utility>
 
@@ -40,7 +39,7 @@ public:
   const TaskContainer &getTasks() const noexcept;
   Task &newTask(const std::string &tIdent);
   TaskContainer::iterator findTask(const std::string &tIdent);
-  bool containsTask(const std::string &tIdent) const noexcept;
+  // bool containsTask(const std::string &tIdent) const noexcept;
 
   bool addTask(Task task);
   Task &getTask(const std::string &tIdent);

@@ -24,7 +24,7 @@ TodoList::~TodoList()
 {
 }
 
-TagContainer Task::getTags() const
+TagContainer Task::getTags() const noexcept
 {
     return tags;
 }
@@ -36,7 +36,7 @@ TagContainer Task::getTags() const
 //  TodoList tObj{};
 //  auto size = tObj.size();
 
-unsigned int TodoList::size() const
+unsigned int TodoList::size() const noexcept
 {
     return projects.size();
 }
@@ -118,7 +118,7 @@ void TodoList::mergeProjectTasks(Project &existingProject, const Project &newPro
     }
 }
 
-void TodoList::insertNewProject(const Project &project)
+void TodoList::insertNewProject(const Project &project) noexcept
 {
     projects.push_back(project);
 }
@@ -271,7 +271,7 @@ void TodoList::load(const std::string &filename)
 
             for (const auto &tag : taskData.value()["tags"])
             {
-                task.addTag(tag);
+                task.addTag(tag.get<std::string>());
             }
 
             project.addTask(task);

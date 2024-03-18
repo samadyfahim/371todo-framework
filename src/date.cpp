@@ -29,18 +29,18 @@ void Date::setDateFromString(const std::string &dateString)
     }
 
     std::istringstream iss(dateString);
-    char delimiter;
+    char dateDelimiter;
 
-    if (!(iss >> year >> delimiter >> month >> delimiter >> day) || (delimiter != '-') || iss.get() != EOF)
+    if (!(iss >> year >> dateDelimiter >> month >> dateDelimiter >> day) || (dateDelimiter != '-') || iss.get() != EOF)
     {
-        throw std::invalid_argument("Invalid date format. Expected format: YYYY-MM-DD");
+        throw InvalidDate("Not valid date format. Expected format: YYYY-MM-DD");
     }
 
     if (year < 0 || month < 1 || month > 12 || day < 1 || day > 31)
     {
         setDate(0, 0, 0);
         initialised = false;
-        throw std::invalid_argument("Invalid date values.");
+        throw InvalidDate("Not valid date value.");
     }
 
     initialised = true;
@@ -81,7 +81,7 @@ std::string Date::str() const
 //  Date d = Date();
 //  d.setDate(2024, 1, 1);
 
-void Date::setDate(int year, int month, int day)
+void Date::setDate(int year, int month, int day) noexcept
 {
     this->year = year;
     this->month = month;
@@ -94,7 +94,7 @@ void Date::setDate(int year, int month, int day)
 //  Date d = Date();
 //  auto year = d.getYear();
 
-unsigned int Date::getYear() const
+unsigned int Date::getYear() const noexcept
 {
     return year;
 }
@@ -104,7 +104,7 @@ unsigned int Date::getYear() const
 //  Date d = Date();
 //  auto month = d.getMonth();
 
-unsigned int Date::getMonth() const
+unsigned int Date::getMonth() const noexcept
 {
     return month;
 }
@@ -114,7 +114,7 @@ unsigned int Date::getMonth() const
 //  Date d = Date();
 //  auto day = d.getDay();
 
-unsigned int Date::getDay() const
+unsigned int Date::getDay() const noexcept
 {
     return day;
 }

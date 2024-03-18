@@ -26,7 +26,7 @@ Task::~Task() {}
 //  Task tObj{"Task Name"};
 //  auto ident = tObj.getIdent();
 
-std::string Task::getIdent() const
+std::string Task::getIdent() const noexcept
 {
     return ident;
 }
@@ -38,7 +38,7 @@ std::string Task::getIdent() const
 //  Task tObj{"Task Name"};
 //  auto ident = tObj.setIdent("New Task Name");
 
-void Task::setIdent(const std::string &ident)
+void Task::setIdent(const std::string &ident) noexcept
 {
     this->ident = ident;
 }
@@ -81,7 +81,7 @@ bool Task::deleteTag(const std::string &tag)
     }
     else
     {
-        throw std::out_of_range("Tag not found");
+        throw TagError("Tag not found");
         return false;
     }
 }
@@ -93,7 +93,7 @@ bool Task::deleteTag(const std::string &tag)
 //  Task tObj{"Task Name"};
 //  tObj.numTags();
 
-unsigned int Task::numTags() const
+unsigned int Task::numTags() const noexcept
 {
     return tags.size();
 }

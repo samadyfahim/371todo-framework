@@ -32,12 +32,18 @@ public:
   void setDateFromString(const std::string &dateString);
   bool isInitialised() const;
   std::string str() const;
-  void setDate(int y, int m, int d);
-  unsigned int getYear() const;
-  unsigned int getMonth() const;
-  unsigned int getDay() const;
+  void setDate(int y, int m, int d) noexcept;
+  unsigned int getYear() const noexcept;
+  unsigned int getMonth() const noexcept;
+  unsigned int getDay() const noexcept;
   bool operator==(const Date &other) const;
   bool operator<(const Date &other) const;
+};
+
+struct InvalidDate : public std::invalid_argument
+{
+  explicit InvalidDate(const std::string &message) : std::invalid_argument(message) {}
+  ~InvalidDate() override = default;
 };
 
 #endif
