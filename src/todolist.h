@@ -42,6 +42,56 @@ public:
     void save(const std::string &filename);
     bool operator==(const TodoList &other) const;
     std::string str() const;
+
+    inline ProjectContainer::iterator begin() { return projects.begin(); }
+    inline ProjectContainer::const_iterator cbegin() const { return projects.cbegin(); }
+
+    inline ProjectContainer::iterator end() { return projects.end(); }
+    inline ProjectContainer::const_iterator cend() const { return projects.cend(); }
+
+    inline ProjectContainer::reverse_iterator rbegin() { return projects.rbegin(); }
+    inline ProjectContainer::const_reverse_iterator crbegin() const
+    {
+        return projects.crbegin();
+    }
+
+    inline ProjectContainer::reverse_iterator rend() { return projects.rend(); }
+    inline ProjectContainer::const_reverse_iterator crend() const
+    {
+        return projects.crend();
+    }
+};
+
+struct AddProjectError : public std::runtime_error
+{
+    explicit AddProjectError(const std::string &projectIdent)
+        : std::runtime_error("could not add project with identifier '" + projectIdent + "'")
+    {
+        /* do nothing */
+    }
+
+    ~AddProjectError() override = default;
+};
+
+struct NoProjectError : public std::out_of_range
+{
+    explicit NoProjectError(const std::string &projectIdent)
+        : std::out_of_range("unknown project with identifier '" + projectIdent + "'")
+    {
+        /* do nothing */
+    }
+
+    ~NoProjectError() override = default;
+};
+
+struct FailedOpenFile : public std::runtime_error
+{
+    explicit FailedOpenFile(const std::string &filename)
+        : std::runtime_error("Failed to open file " + filename)
+    {
+        /* do nothing */
+    }
+    ~FailedOpenFile() override = default;
 };
 
 #endif // TODOLIST_H

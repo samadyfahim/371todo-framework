@@ -47,6 +47,40 @@ public:
     std::string str() const;
 
     nlohmann::json json() const;
+
+    inline TagContainer::iterator begin() { return tags.begin(); }
+    inline TagContainer::const_iterator cbegin() const { return tags.cbegin(); }
+
+    inline TagContainer::iterator end() { return tags.end(); }
+    inline TagContainer::const_iterator cend() const { return tags.cend(); }
+
+    inline TagContainer::reverse_iterator rbegin() { return tags.rbegin(); }
+    inline TagContainer::const_reverse_iterator crbegin() const { return tags.crbegin(); }
+
+    inline TagContainer::reverse_iterator rend() { return tags.rend(); }
+    inline TagContainer::const_reverse_iterator crend() const { return tags.crend(); }
+};
+
+struct AddTagError : public std::runtime_error
+{
+    explicit AddTagError(const std::string &tagIdent)
+        : std::runtime_error("could not add tag with identifier '" + tagIdent + "'")
+    {
+        /* do nothing */
+    }
+
+    ~AddTagError() override = default;
+};
+
+struct NoTagError : public std::out_of_range
+{
+    explicit NoTagError(const std::string &tagIdent)
+        : std::out_of_range("unknown tag with identifier '" + tagIdent + "'")
+    {
+        /* do nothing */
+    }
+
+    ~NoTagError() override = default;
 };
 
 #endif //
