@@ -56,26 +56,220 @@ int App::run(int argc, char *argv[])
   switch (a)
   {
   case Action::CREATE:
-    throw std::runtime_error("create not implemented");
+    handleCreateAction(args, tlObj);
     break;
 
   case Action::JSON:
-    throw std::runtime_error("json not implemented");
+    // handleJsonAction(args, tlObj);
     break;
 
   case Action::UPDATE:
-    throw std::runtime_error("update not implemented");
+    // handleUpdateAction(args, tlObj);
     break;
 
   case Action::DELETE:
-    throw std::runtime_error("delete not implemented");
+    // handleDeleteAction(args, tlObj);
     break;
 
   default:
     throw std::runtime_error("unknown action not implemented");
   }
 
+  tlObj.save(db);
+
   return 0;
+}
+
+void App::handleJsonAction(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string json = getJSON(tlObj);
+  std::cout << json << std::endl;
+}
+
+// void App::handleJsonAction(const cxxopts::ParseResult &args, TodoList &tlObj)
+// {
+//   if (args.count("project"))
+//   {
+//     if (args.count("task"))
+//     {
+//       if (args.count("tag"))
+//       {
+//         std::string projectIdent = args["project"].as<std::string>();
+//         std::string taskIdent = args["task"].as<std::string>();
+//         std::string tagIdent = args["tag"].as<std::string>();
+//         std::string json = getJSON(tlObj, projectIdent, taskIdent, tagIdent);
+//         std::cout << json << std::endl;
+//       }
+//       else
+//       {
+//         std::string projectIdent = args["project"].as<std::string>();
+//         std::string taskIdent = args["task"].as<std::string>();
+//         std::string json = getJSON(tlObj, projectIdent, taskIdent);
+//         std::cout << json << std::endl;
+//       }
+//     }
+//     else
+//     {
+//       std::string projectIdent = args["project"].as<std::string>();
+//       std::string json = getJSON(tlObj, projectIdent);
+//       std::cout << json << std::endl;
+//     }
+//   }
+//   else
+//   {
+//     std::string json = getJSON(tlObj);
+//     std::cout << json << std::endl;
+//   }
+// }
+
+void App::handleCreateAction(cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  try
+  {
+    if (args.count("project"))
+    {
+      createProject(args, tlObj);
+    }
+    else if (args.count("task"))
+    {
+      createTask(args, tlObj);
+    }
+    else if (args.count("tag"))
+    {
+      createTag(args, tlObj);
+    }
+  }
+  catch (const std::exception &e)
+  {
+    std::cerr << "Error: " << e.what() << std::endl;
+  }
+}
+void App::createProject(cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  tlObj.newProject(projectIdent);
+}
+
+void App::handleDeleteAction(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  try
+  {
+    if (args.count("project"))
+    {
+      deleteProject(args, tlObj);
+    }
+    else if (args.count("task"))
+    {
+      deleteTask(args, tlObj);
+    }
+  }
+  catch (const std::exception &e)
+  {
+    std::cerr << "Error: " << e.what() << std::endl;
+  }
+}
+
+void App::createTask(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  project.newTask(taskIdent);
+}
+
+void App::createTag(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  std::string tagIdent = args["tag"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  Task &task = project.getTask(taskIdent);
+  task.addTag(tagIdent);
+}
+
+void App::deleteProject(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  tlObj.deleteProject(projectIdent);
+}
+
+void App::deleteTask(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  project.deleteTask(taskIdent);
+}
+
+void App::handleUpdateAction(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  try
+  {
+    if (args.count("project"))
+    {
+      updateProject(args, tlObj);
+    }
+    else if (args.count("task"))
+    {
+      updateTask(args, tlObj);
+    }
+    else if (args.count("tag"))
+    {
+      updateTag(args, tlObj);
+    }
+  }
+  catch (const std::exception &e)
+  {
+    std::cerr << "Error: " << e.what() << std::endl;
+  }
+}
+
+void App::updateProject(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+
+  // Update project properties if provided
+  if (args.count("project-name"))
+  {
+    std::string newName = args["project-name"].as<std::string>();
+    project.setIdent(newName);
+  }
+}
+
+void App::updateTask(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  Task &task = project.getTask(taskIdent);
+
+  // Update task properties if provided
+  if (args.count("task-name"))
+  {
+    std::string newName = args["task-name"].as<std::string>();
+    task.setIdent(newName);
+  }
+  if (args.count("completed"))
+  {
+    bool completed = args["completed"].as<bool>();
+    task.setComplete(completed);
+  }
+}
+
+void App::updateTag(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  std::string tagIdent = args["tag"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  Task &task = project.getTask(taskIdent);
+
+  if (task.containsTag(tagIdent))
+  {
+
+    task.deleteTag(tagIdent);
+  }
 }
 
 // Create a cxxopts instance. You do not need to modify this function.

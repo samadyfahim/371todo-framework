@@ -44,6 +44,8 @@ public:
     std::string str() const;
     void parseToDoList(const nlohmann::json &jsonData);
 
+    nlohmann::json json() const;
+
     inline ProjectContainer::iterator begin() { return projects.begin(); }
     inline ProjectContainer::const_iterator cbegin() const { return projects.cbegin(); }
 

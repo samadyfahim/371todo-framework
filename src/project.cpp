@@ -73,7 +73,8 @@ Task &Project::newTask(const std::string &tIdent)
     }
     else
     {
-        tasks.emplace_back(tIdent);
+        Task task(tIdent);
+        tasks.push_back(std::move(task));
         return tasks.back();
     }
 }
@@ -233,9 +234,8 @@ void Project::parseJsonProject(const nlohmann::json &jsonData)
         {
             const std::string &taskName = it.key();
             const nlohmann::json &taskData = it.value();
-            Task task(taskName);
+            Task &task = newTask(taskName);
             task.parseJsonTask(taskData);
-            tasks.emplace_back(std::move(task));
         }
     }
     catch (const std::exception &e)

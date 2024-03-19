@@ -54,6 +54,18 @@ namespace App
     cxxopts::Options cxxoptsSetup();
 
     App::Action parseActionArgument(cxxopts::ParseResult &args);
+    void handleJsonAction(cxxopts::ParseResult &args, TodoList &tlObj);
+    void handleDeleteAction(const cxxopts::ParseResult &args, TodoList &tlObj);
+    void handleCreateAction(const cxxopts::ParseResult &args, TodoList &tlObj);
+    void createProject(const cxxopts::ParseResult &args, TodoList &tlObj);
+    void createTask(const cxxopts::ParseResult &args, TodoList &tlObj);
+    void createTag(const cxxopts::ParseResult &args, TodoList &tlObj);
+    void deleteProject(const cxxopts::ParseResult &args, TodoList &tlObj);
+    void deleteTask(const cxxopts::ParseResult &args, TodoList &tlObj);
+    void handleUpdateAction(const cxxopts::ParseResult &args, TodoList &tlObj);
+    void updateProject(const cxxopts::ParseResult &args, TodoList &tlObj);
+    void updateTask(const cxxopts::ParseResult &args, TodoList &tlObj);
+    void updateTag(const cxxopts::ParseResult &args, TodoList &tlObj);
 
     std::string getJSON(TodoList &tl);
     std::string getJSON(TodoList &tl, const std::string &p);

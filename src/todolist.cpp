@@ -60,7 +60,7 @@ Project &TodoList::newProject(const std::string &projectIdent)
     catch (const NoProjectError &)
     {
         Project newProject(projectIdent);
-        projects.push_back(newProject);
+        projects.push_back(std::move(newProject));
         return projects.back();
     }
 }
@@ -280,7 +280,7 @@ void TodoList::save(const std::string &filename)
     }
 
     std::string jsonDataStr = str();
-    file << std::setw(4) << jsonDataStr << std::endl;
+    file << jsonDataStr << std::endl;
     file.close();
 }
 
@@ -310,6 +310,11 @@ bool TodoList::operator==(const TodoList &other) const
 
 std::string TodoList::str() const
 {
+    return json().dump();
+}
+
+nlohmann::json TodoList::json() const
+{
     nlohmann::json jsonData;
     for (const auto &project : projects)
     {
@@ -319,13 +324,16 @@ std::string TodoList::str() const
             nlohmann::json taskData;
             taskData["completed"] = task.isComplete();
             taskData["dueDate"] = task.getDueDate().str();
-            taskData["tags"] = task.getTags();
+            for (const std::string &tag : task.getTags())
+            {
+                taskData["tags"].push_back(tag);
+            }
             projectData[task.getIdent()] = taskData;
         }
         jsonData[project.getIdent()] = projectData;
     }
 
-    return jsonData.dump();
+    return jsonData;
 }
 
 void TodoList::parseToDoList(const nlohmann::json &jsonData)
@@ -337,9 +345,8 @@ void TodoList::parseToDoList(const nlohmann::json &jsonData)
         {
             const std::string &projectName = it.key();
             const nlohmann::json &projectData = it.value();
-            Project project(projectName);
+            Project &project = newProject(projectName);
             project.parseJsonProject(projectData);
-            projects.emplace_back(std::move(project));
         }
     }
     catch (const std::exception &e)
