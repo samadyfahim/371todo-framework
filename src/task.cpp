@@ -115,7 +115,7 @@ bool Task::containsTag(const std::string &tag) const
 // Example:
 //  Task tObj{"Task Name"};
 //  tObj.getDueDate();
-Date Task::getDueDate() const
+Date Task::getDueDate() const noexcept
 {
     return dueDate;
 }
@@ -126,7 +126,7 @@ Date Task::getDueDate() const
 //  Task tObj{"Task Name"};
 //  Date d = Date();
 //  tObj.setDueDate(d);
-void Task::setDueDate(const Date &dueDate)
+void Task::setDueDate(const Date &dueDate) noexcept
 {
     this->dueDate = dueDate;
 }
@@ -136,7 +136,7 @@ void Task::setDueDate(const Date &dueDate)
 // Example:
 //  Task tObj{"Task Name"};
 //  tObj.setComplete(true);
-void Task::setComplete(bool complete)
+void Task::setComplete(bool complete) noexcept
 {
     completed = complete;
 }
@@ -179,22 +179,7 @@ bool Task::operator==(const Task &other) const
 //  std::string s = iObj.str();
 std::string Task::str() const
 {
-    nlohmann::json taskJson;
-
-    taskJson["identifier"] = ident;
-    taskJson["dueDate"] = dueDate.str();
-    taskJson["completed"] = completed;
-
-    nlohmann::json tagsJson;
-    for (const std::string &tag : tags)
-    {
-        tagsJson.push_back(tag);
-    }
-    taskJson["tags"] = tagsJson;
-
-    std::string jsonString = taskJson.dump();
-
-    return jsonString;
+    return json().dump();
 }
 
 nlohmann::json Task::json() const
@@ -203,6 +188,37 @@ nlohmann::json Task::json() const
     taskJson["identifier"] = ident;
     taskJson["dueDate"] = dueDate.str();
     taskJson["completed"] = completed;
-    taskJson["tags"] = tags;
+    for (const std::string &tag : tags)
+    {
+        taskJson["tags"].emplace_back(tag);
+    }
+
     return taskJson;
+}
+
+// TagContainer Task::getTags() const noexcept
+// {
+//     return tags;
+// }
+
+void Task::parseJsonTask(const nlohmann::json &jsonData)
+{
+    if (jsonData.contains("completed"))
+    {
+        bool completed = jsonData["completed"];
+        setComplete(completed);
+    }
+    if (jsonData.contains("dueDate"))
+    {
+        Date dueDate;
+        dueDate.setDateFromString(jsonData["dueDate"]);
+        setDueDate(dueDate);
+    }
+    if (jsonData.contains("tags"))
+    {
+        for (const auto &tag : jsonData["tags"])
+        {
+            addTag(tag);
+        }
+    }
 }

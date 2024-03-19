@@ -37,17 +37,22 @@ public:
     bool deleteTag(const std::string &tag);
     unsigned int numTags() const noexcept;
     bool containsTag(const std::string &tag) const;
-    Date getDueDate() const;
-    void setDueDate(const Date &dueDate);
+    Date getDueDate() const noexcept;
+    void setDueDate(const Date &dueDate) noexcept;
     bool isComplete() const;
-    void setComplete(bool complete);
-    TagContainer getTags() const;
+    void setComplete(bool complete) noexcept;
+    TagContainer getTags() const noexcept;
     bool operator==(const Task &other) const;
     std::string str() const;
 
     nlohmann::json json() const;
 
-    inline TagContainer::iterator begin() { return tags.begin(); }
+    void parseJsonTask(const nlohmann::json &jsonData);
+
+    inline TagContainer::iterator begin()
+    {
+        return tags.begin();
+    }
     inline TagContainer::const_iterator cbegin() const { return tags.cbegin(); }
 
     inline TagContainer::iterator end() { return tags.end(); }

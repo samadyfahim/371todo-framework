@@ -28,12 +28,12 @@ private:
 
     Project &findExistingProject(const std::string &projectIdent);
     void mergeProjectTasks(Project &existingProject, const Project &newProject);
-    void insertNewProject(const Project &project);
+    void insertNewProject(const Project &project) noexcept;
 
 public:
     TodoList();
     ~TodoList();
-    unsigned int size() const;
+    unsigned int size() const noexcept;
     Project &newProject(const std::string &projectIdent);
     bool addProject(const Project &project);
     Project &getProject(const std::string &projectIdent);
@@ -42,6 +42,7 @@ public:
     void save(const std::string &filename);
     bool operator==(const TodoList &other) const;
     std::string str() const;
+    void parseToDoList(const nlohmann::json &jsonData);
 
     inline ProjectContainer::iterator begin() { return projects.begin(); }
     inline ProjectContainer::const_iterator cbegin() const { return projects.cbegin(); }
@@ -92,6 +93,14 @@ struct FailedOpenFile : public std::runtime_error
         /* do nothing */
     }
     ~FailedOpenFile() override = default;
+};
+
+struct JsonParsingError : public std::runtime_error
+{
+    explicit JsonParsingError(const std::string &message)
+        : std::runtime_error("Error parsing JSON file: " + message)
+    {
+    }
 };
 
 #endif // TODOLIST_H

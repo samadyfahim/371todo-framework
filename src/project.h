@@ -50,8 +50,13 @@ public:
   nlohmann::json json() const;
   std::string str() const;
 
+  void parseJsonProject(const nlohmann::json &jsonData);
+
   // Wrappers for iterating over the nested container
-  inline TaskContainer::iterator begin() { return tasks.begin(); }
+  inline TaskContainer::iterator begin()
+  {
+    return tasks.begin();
+  }
   inline TaskContainer::const_iterator cbegin() const { return tasks.cbegin(); }
 
   inline TaskContainer::iterator end() { return tasks.end(); }

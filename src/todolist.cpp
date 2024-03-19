@@ -238,44 +238,26 @@ bool TodoList::deleteProject(const std::string &projectIdent)
 
 void TodoList::load(const std::string &filename)
 {
-    std::ifstream file(filename);
-    if (!file.is_open())
+    try
     {
-        throw FailedOpenFile(filename);
-    }
-
-    nlohmann::json jsonData;
-    file >> jsonData;
-    file.close();
-
-    for (auto it = jsonData.begin(); it != jsonData.end(); ++it)
-    {
-        std::string projectName = it.key();
-        Project &project = newProject(projectName);
-
-        for (auto &taskData : it.value().items())
+        // Open the JSON file
+        std::ifstream file(filename);
+        if (!file.is_open())
         {
-            std::string taskName = taskData.key();
-            bool completed = taskData.value()["completed"];
-            std::string dueDateString = taskData.value()["due"];
-
-            Task task(taskName);
-            task.setComplete(completed);
-
-            if (!dueDateString.empty())
-            {
-                Date dueDate;
-                dueDate.setDateFromString(dueDateString);
-                task.setDueDate(dueDate);
-            }
-
-            for (const auto &tag : taskData.value()["tags"])
-            {
-                task.addTag(tag.get<std::string>());
-            }
-
-            project.addTask(task);
+            throw std::runtime_error("Failed to open file: " + filename);
         }
+
+        // Parse the JSON content
+        nlohmann::json jsonData;
+        file >> jsonData;
+
+        // Call parseToDoList to handle parsing
+        parseToDoList(jsonData);
+    }
+    catch (const std::exception &e)
+    {
+        // Handle any exceptions
+        throw std::runtime_error("Error loading file: " + std::string(e.what()));
     }
 }
 
@@ -345,3 +327,73 @@ std::string TodoList::str() const
 
     return jsonData.dump();
 }
+
+void TodoList::parseToDoList(const nlohmann::json &jsonData)
+{
+    try
+    {
+        // Iterate through projects
+        for (auto it = jsonData.begin(); it != jsonData.end(); ++it)
+        {
+            const std::string &projectName = it.key();      // Get project name
+            const nlohmann::json &projectData = it.value(); // Get project data
+
+            // Create Project object
+            Project project(projectName);
+
+            // Parse project data
+            project.parseJsonProject(projectData);
+
+            // Add project to TodoList
+            projects.emplace_back(std::move(project));
+        }
+    }
+    catch (const std::exception &e)
+    {
+        // Handle any exceptions
+        throw std::runtime_error("Error parsing TodoList data: " + std::string(e.what()));
+    }
+}
+
+// void TodoList::load(const std::string &filename)
+// {
+//     std::ifstream file(filename);
+//     if (!file.is_open())
+//     {
+//         throw FailedOpenFile(filename);
+//     }
+
+//     nlohmann::json jsonData;
+//     file >> jsonData;
+//     file.close();
+
+//     for (auto it = jsonData.begin(); it != jsonData.end(); ++it)
+//     {
+//         std::string projectName = it.key();
+//         Project &project = newProject(projectName);
+
+//         for (auto &taskData : it.value().items())
+//         {
+//             std::string taskName = taskData.key();
+//             bool completed = taskData.value()["completed"];
+//             std::string dueDateString = taskData.value()["due"];
+
+//             Task task(taskName);
+//             task.setComplete(completed);
+
+//             if (!dueDateString.empty())
+//             {
+//                 Date dueDate;
+//                 dueDate.setDateFromString(dueDateString);
+//                 task.setDueDate(dueDate);
+//             }
+
+//             for (const auto &tag : taskData.value()["tags"])
+//             {
+//                 task.addTag(tag.get<std::string>());
+//             }
+
+//             project.addTask(task);
+//         }
+//     }
+// }

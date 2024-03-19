@@ -183,13 +183,11 @@ nlohmann::json Project::json() const
     nlohmann::json projectJson;
     projectJson["identifier"] = ident;
 
-    nlohmann::json tasksJson;
     for (const auto &task : tasks)
     {
-        tasksJson.push_back(task.json());
+        projectJson["tasks"].emplace_back(task.json());
     }
 
-    projectJson["tasks"] = tasksJson;
     return projectJson;
 }
 
@@ -224,4 +222,24 @@ TaskContainer::iterator Project::findTask(const std::string &tIdent)
 const TaskContainer &Project::getTasks() const noexcept
 {
     return tasks;
+}
+
+void Project::parseJsonProject(const nlohmann::json &jsonData)
+{
+    try
+    {
+        for (auto it = jsonData.begin(); it != jsonData.end(); ++it)
+
+        {
+            const std::string &taskName = it.key();
+            const nlohmann::json &taskData = it.value();
+            Task task(taskName);
+            task.parseJsonTask(taskData);
+            tasks.emplace_back(std::move(task));
+        }
+    }
+    catch (const std::exception &e)
+    {
+        throw std::runtime_error("Error parsing project data: " + std::string(e.what()));
+    }
 }
