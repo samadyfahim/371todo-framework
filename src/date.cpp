@@ -2,13 +2,13 @@
 // CSC371 Advanced Object Oriented Programming (2023/24)
 // Department of Computer Science, Swansea University
 //
-// Author: <STUDENT NUMBER>
+// Author: <2035827>
 //
 // Canvas: https://canvas.swansea.ac.uk/courses/44636
 // -----------------------------------------------------
 
 #include "date.h"
-// Provided default constructor to create an unitialised date.
+
 Date::Date() : year(0), month(0), day(0), initialised(false) {}
 
 // TODO write a function setDateFromString that takes a string argument in
@@ -33,7 +33,7 @@ void Date::setDateFromString(const std::string &dateString)
 
     if (!(iss >> year >> dateDelimiter >> month >> dateDelimiter >> day) || (dateDelimiter != '-') || iss.get() != EOF)
     {
-        throw InvalidDate("Not valid date format. Expected format: YYYY-MM-DD");
+        throw InvalidDate("Not valid date format. Expected format: YYYY-MM-DD please change the date format. ");
     }
 
     if (year < 0 || month < 1 || month > 12 || day < 1 || day > 31)

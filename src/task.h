@@ -2,7 +2,7 @@
 // CSC371 Advanced Object Oriented Programming (2023/24)
 // Department of Computer Science, Swansea University
 //
-// Author: <STUDENT NUMBER>
+// Author: <2035827>
 //
 // Canvas: https://canvas.swansea.ac.uk/courses/44636
 // -----------------------------------------------------
@@ -31,36 +31,34 @@ public:
     Task(std::string ident);
     ~Task();
 
-    std::string getIdent() const noexcept;
-    void setIdent(const std::string &ident) noexcept;
+    unsigned int numTags() const noexcept;
+
     bool addTag(const std::string &tag);
     bool deleteTag(const std::string &tag);
-    unsigned int numTags() const noexcept;
     bool containsTag(const std::string &tag) const;
-    Date getDueDate() const noexcept;
-    void setDueDate(const Date &dueDate) noexcept;
     bool isComplete() const;
-    void setComplete(bool complete) noexcept;
-    TagContainer getTags() const noexcept;
     bool operator==(const Task &other) const;
+
+    void setIdent(const std::string &ident) noexcept;
+    void setDueDate(const Date &dueDate) noexcept;
+    void setComplete(bool complete) noexcept;
+    void parseJsonTask(const nlohmann::json &jsonData);
+
+    Date getDueDate() const noexcept;
+
+    const TagContainer &getTags() const noexcept;
+
     std::string str() const;
+    std::string getIdent() const noexcept;
 
     nlohmann::json json() const;
 
-    void parseJsonTask(const nlohmann::json &jsonData);
-
-    inline TagContainer::iterator begin()
-    {
-        return tags.begin();
-    }
+    inline TagContainer::iterator begin() { return tags.begin(); }
     inline TagContainer::const_iterator cbegin() const { return tags.cbegin(); }
-
     inline TagContainer::iterator end() { return tags.end(); }
     inline TagContainer::const_iterator cend() const { return tags.cend(); }
-
     inline TagContainer::reverse_iterator rbegin() { return tags.rbegin(); }
     inline TagContainer::const_reverse_iterator crbegin() const { return tags.crbegin(); }
-
     inline TagContainer::reverse_iterator rend() { return tags.rend(); }
     inline TagContainer::const_reverse_iterator crend() const { return tags.crend(); }
 };

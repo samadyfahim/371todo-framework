@@ -2,7 +2,7 @@
 // CSC371 Advanced Object Oriented Programming (2023/24)
 // Department of Computer Science, Swansea University
 //
-// Author: <STUDENT NUMBER>
+// Author: <2035827>
 //
 // Canvas: https://canvas.swansea.ac.uk/courses/44636
 // -----------------------------------------------------
@@ -33,12 +33,12 @@
 //
 // Example:
 //  int main(int argc, char *argv[]) { return App::run(argc, argv); }
+
 int App::run(int argc, char *argv[])
 {
   auto options = App::cxxoptsSetup();
   auto args = options.parse(argc, argv);
 
-  // Print the help usage if requested
   if (args.count("help"))
   {
     std::cout << options.help() << '\n';
@@ -114,6 +114,24 @@ void App::createProject(const cxxopts::ParseResult &args, TodoList &tlObj)
   tlObj.newProject(projectIdent);
 }
 
+void App::createTask(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  project.newTask(taskIdent);
+}
+
+void App::createTag(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  std::string tagIdent = args["tag"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  Task &task = project.getTask(taskIdent);
+  task.addTag(tagIdent);
+}
+
 void App::handleDeleteAction(const cxxopts::ParseResult &args, TodoList &tlObj)
 {
   try
@@ -137,26 +155,8 @@ void App::handleDeleteAction(const cxxopts::ParseResult &args, TodoList &tlObj)
   }
   catch (const std::exception &e)
   {
-    std::cerr << "Error: " << e.what() << std::endl;
+    std::cerr << "Error!!!!: " << e.what() << std::endl;
   }
-}
-
-void App::createTask(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string projectIdent = args["project"].as<std::string>();
-  std::string taskIdent = args["task"].as<std::string>();
-  Project &project = tlObj.getProject(projectIdent);
-  project.newTask(taskIdent);
-}
-
-void App::createTag(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string projectIdent = args["project"].as<std::string>();
-  std::string taskIdent = args["task"].as<std::string>();
-  std::string tagIdent = args["tag"].as<std::string>();
-  Project &project = tlObj.getProject(projectIdent);
-  Task &task = project.getTask(taskIdent);
-  task.addTag(tagIdent);
 }
 
 void App::handleDeleteProject(const cxxopts::ParseResult &args, TodoList &tlObj)
@@ -178,11 +178,8 @@ void App::handleDeleteTag(const cxxopts::ParseResult &args, TodoList &tlObj)
   std::string projectIdent = args["project"].as<std::string>();
   std::string taskIdent = args["task"].as<std::string>();
   std::string tagIdent = args["tag"].as<std::string>();
-
   Project &project = tlObj.getProject(projectIdent);
   Task &task = project.getTask(taskIdent);
-
-  // Call deleteTag on the task object
   task.deleteTag(tagIdent);
 }
 
@@ -214,7 +211,6 @@ void App::updateProject(const cxxopts::ParseResult &args, TodoList &tlObj)
   std::string projectIdent = args["project"].as<std::string>();
   Project &project = tlObj.getProject(projectIdent);
 
-  // Update project properties if provided
   if (args.count("project-name"))
   {
     std::string newName = args["project-name"].as<std::string>();
@@ -229,7 +225,6 @@ void App::updateTask(const cxxopts::ParseResult &args, TodoList &tlObj)
   Project &project = tlObj.getProject(projectIdent);
   Task &task = project.getTask(taskIdent);
 
-  // Update task properties if provided
   if (args.count("task-name"))
   {
     std::string newName = args["task-name"].as<std::string>();
@@ -262,6 +257,7 @@ void App::updateTag(const cxxopts::ParseResult &args, TodoList &tlObj)
 // Example:
 //  auto options = App::cxxoptsSetup();
 //  auto args = options.parse(argc, argv);
+
 cxxopts::Options App::cxxoptsSetup()
 {
   cxxopts::Options cxxopts("371todo", "Student ID: " + STUDENT_NUMBER + "\n");

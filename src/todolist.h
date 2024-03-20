@@ -2,7 +2,7 @@
 // CSC371 Advanced Object Oriented Programming (2023/24)
 // Department of Computer Science, Swansea University
 //
-// Author: <STUDENT NUMBER>
+// Author: <2035827>
 //
 // Canvas: https://canvas.swansea.ac.uk/courses/44636
 // -----------------------------------------------------
@@ -33,17 +33,18 @@ private:
 public:
     TodoList();
     ~TodoList();
+
     unsigned int size() const noexcept;
-    Project &newProject(const std::string &projectIdent);
     bool addProject(const Project &project);
-    Project &getProject(const std::string &projectIdent);
     bool deleteProject(const std::string &projectIdent);
+    bool operator==(const TodoList &other) const;
+    Project &newProject(const std::string &projectIdent);
+    Project &getProject(const std::string &projectIdent);
+
     void load(const std::string &filename);
     void save(const std::string &filename);
-    bool operator==(const TodoList &other) const;
-    std::string str() const;
     void parseToDoList(const nlohmann::json &jsonData);
-
+    std::string str() const;
     nlohmann::json json() const;
 
     inline ProjectContainer::iterator begin() { return projects.begin(); }

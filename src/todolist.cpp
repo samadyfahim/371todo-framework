@@ -2,7 +2,7 @@
 // CSC371 Advanced Object Oriented Programming (2023/24)
 // Department of Computer Science, Swansea University
 //
-// Author: <STUDENT NUMBER>
+// Author: <2035827>
 //
 // Canvas: https://canvas.swansea.ac.uk/courses/44636
 // -----------------------------------------------------
@@ -22,11 +22,6 @@ TodoList::TodoList()
 
 TodoList::~TodoList()
 {
-}
-
-TagContainer Task::getTags() const noexcept
-{
-    return tags;
 }
 
 // TODO Write a function, size, that takes no parameters and returns an unsigned
@@ -240,23 +235,19 @@ void TodoList::load(const std::string &filename)
 {
     try
     {
-        // Open the JSON file
         std::ifstream file(filename);
         if (!file.is_open())
         {
             throw std::runtime_error("Failed to open file: " + filename);
         }
 
-        // Parse the JSON content
         nlohmann::json jsonData;
         file >> jsonData;
 
-        // Call parseToDoList to handle parsing
         parseToDoList(jsonData);
     }
     catch (const std::exception &e)
     {
-        // Handle any exceptions
         throw std::runtime_error("Error loading file: " + std::string(e.what()));
     }
 }
@@ -280,7 +271,7 @@ void TodoList::save(const std::string &filename)
     }
 
     std::string jsonDataStr = str();
-    file << jsonDataStr << std::endl;
+    file << jsonDataStr;
     file.close();
 }
 
@@ -340,7 +331,6 @@ void TodoList::parseToDoList(const nlohmann::json &jsonData)
 {
     try
     {
-        // Iterate through projects
         for (auto it = jsonData.begin(); it != jsonData.end(); ++it)
         {
             const std::string &projectName = it.key();
@@ -351,7 +341,6 @@ void TodoList::parseToDoList(const nlohmann::json &jsonData)
     }
     catch (const std::exception &e)
     {
-        // Handle any exceptions
         throw std::runtime_error("Error parsing TodoList data: " + std::string(e.what()));
     }
 }

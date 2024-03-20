@@ -2,7 +2,7 @@
 // CSC371 Advanced Object Oriented Programming (2023/24)
 // Department of Computer Science, Swansea University
 //
-// Author: <STUDENT NUMBER>
+// Author: <2035827>
 //
 // Canvas: https://canvas.swansea.ac.uk/courses/44636
 // -----------------------------------------------------
@@ -115,6 +115,7 @@ bool Task::containsTag(const std::string &tag) const
 // Example:
 //  Task tObj{"Task Name"};
 //  tObj.getDueDate();
+
 Date Task::getDueDate() const noexcept
 {
     return dueDate;
@@ -126,20 +127,24 @@ Date Task::getDueDate() const noexcept
 //  Task tObj{"Task Name"};
 //  Date d = Date();
 //  tObj.setDueDate(d);
+
 void Task::setDueDate(const Date &dueDate) noexcept
 {
     this->dueDate = dueDate;
 }
+
 // TODO Write a function, setComplete, that takes one parameter, a bool for
 // a new completed state, and updates the member variable. It returns nothing.
 //
 // Example:
 //  Task tObj{"Task Name"};
 //  tObj.setComplete(true);
+
 void Task::setComplete(bool complete) noexcept
 {
     completed = complete;
 }
+
 // TODO Write a function, isComplete, that returns the completed state for the
 // Task.
 //
@@ -164,6 +169,7 @@ bool Task::isComplete() const
 //  if(tObj1 == tObj2) {
 //   ...
 //  }
+
 bool Task::operator==(const Task &other) const
 {
     return ident == other.ident && dueDate == other.dueDate && completed == other.completed && tags == other.tags;
@@ -177,6 +183,7 @@ bool Task::operator==(const Task &other) const
 // Example:
 //  Item iObj{"itemIdent"};
 //  std::string s = iObj.str();
+
 std::string Task::str() const
 {
     return json().dump();
@@ -195,11 +202,6 @@ nlohmann::json Task::json() const
 
     return taskJson;
 }
-
-// TagContainer Task::getTags() const noexcept
-// {
-//     return tags;
-// }
 
 void Task::parseJsonTask(const nlohmann::json &jsonData)
 {
@@ -221,4 +223,9 @@ void Task::parseJsonTask(const nlohmann::json &jsonData)
             addTag(tag);
         }
     }
+}
+
+const TagContainer &Task::getTags() const noexcept
+{
+    return tags;
 }

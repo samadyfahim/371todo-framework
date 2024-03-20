@@ -57,13 +57,16 @@ namespace App
     void handleJsonAction(const cxxopts::ParseResult &args, TodoList &tlObj);
     void handleDeleteAction(const cxxopts::ParseResult &args, TodoList &tlObj);
     void handleCreateAction(const cxxopts::ParseResult &args, TodoList &tlObj);
+    void handleUpdateAction(const cxxopts::ParseResult &args, TodoList &tlObj);
+
     void createProject(const cxxopts::ParseResult &args, TodoList &tlObj);
     void createTask(const cxxopts::ParseResult &args, TodoList &tlObj);
     void createTag(const cxxopts::ParseResult &args, TodoList &tlObj);
+
     void handleDeleteProject(const cxxopts::ParseResult &args, TodoList &tlObj);
     void handleDeleteTag(const cxxopts::ParseResult &args, TodoList &tlObj);
     void handleDeleteTask(const cxxopts::ParseResult &args, TodoList &tlObj);
-    void handleUpdateAction(const cxxopts::ParseResult &args, TodoList &tlObj);
+
     void updateProject(const cxxopts::ParseResult &args, TodoList &tlObj);
     void updateTask(const cxxopts::ParseResult &args, TodoList &tlObj);
     void updateTag(const cxxopts::ParseResult &args, TodoList &tlObj);
@@ -73,24 +76,6 @@ namespace App
     std::string getJSON(TodoList &tl, const std::string &p, const std::string &t);
     std::string getJSON(TodoList &tl, const std::string &p, const std::string &task,
                         const std::string &tag);
-
-        // void handleCreateAction(TodoList &tl);
-    // void handleCreateAction(TodoList &tl, const std::string &p);
-    // void handleCreateAction(TodoList &tl, const std::string &p, const std::string &t);
-    // void handleCreateAction(TodoList &tl, const std::string &p, const std::string &task,
-    //                         const std::string &tag);
-
-    // void handleUpdateAction(TodoList &tl);
-    // void handleUpdateAction(TodoList &tl, const std::string &p);
-    // void handleUpdateAction(TodoList &tl, const std::string &p, const std::string &t);
-    // void handleUpdateAction(TodoList &tl, const std::string &p, const std::string &task,
-    //                         const std::string &tag);
-
-    // void handleDeleteAction(TodoList &tl);
-    // void handleDeleteAction(TodoList &tl, const std::string &p);
-    // void handleDeleteAction(TodoList &tl, const std::string &p, const std::string &t);
-    // void handleDeleteAction(TodoList &tl, const std::string &p, const std::string &task,
-    //                         const std::string &tag);
 
 } // namespace App
 

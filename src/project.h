@@ -2,7 +2,7 @@
 // CSC371 Advanced Object Oriented Programming (2023/24)
 // Department of Computer Science, Swansea University
 //
-// Author: <STUDENT NUMBER>
+// Author: <2035827>
 //
 // Canvas: https://canvas.swansea.ac.uk/courses/44636
 // -----------------------------------------------------
@@ -39,7 +39,6 @@ public:
   const TaskContainer &getTasks() const noexcept;
   Task &newTask(const std::string &tIdent);
   TaskContainer::iterator findTask(const std::string &tIdent);
-  // bool containsTask(const std::string &tIdent) const noexcept;
 
   bool addTask(Task task);
   Task &getTask(const std::string &tIdent);
@@ -53,20 +52,14 @@ public:
   void parseJsonProject(const nlohmann::json &jsonData);
 
   // Wrappers for iterating over the nested container
-  inline TaskContainer::iterator begin()
-  {
-    return tasks.begin();
-  }
+  inline TaskContainer::iterator begin() { return tasks.begin(); }
   inline TaskContainer::const_iterator cbegin() const { return tasks.cbegin(); }
 
   inline TaskContainer::iterator end() { return tasks.end(); }
   inline TaskContainer::const_iterator cend() const { return tasks.cend(); }
 
   inline TaskContainer::reverse_iterator rbegin() { return tasks.rbegin(); }
-  inline TaskContainer::const_reverse_iterator crbegin() const
-  {
-    return tasks.crbegin();
-  }
+  inline TaskContainer::const_reverse_iterator crbegin() const { return tasks.crbegin(); }
 
   inline TaskContainer::reverse_iterator rend() { return tasks.rend(); }
   inline TaskContainer::const_reverse_iterator crend() const

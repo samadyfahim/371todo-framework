@@ -2,7 +2,7 @@
 // CSC371 Advanced Object Oriented Programming (2023/24)
 // Department of Computer Science, Swansea University
 //
-// Author: <STUDENT NUMBER>
+// Author: <2035827>
 //
 // Canvas: https://canvas.swansea.ac.uk/courses/44636
 // -----------------------------------------------------
@@ -211,13 +211,6 @@ TaskContainer::iterator Project::findTask(const std::string &tIdent)
                         [&tIdent](const Task &task)
                         { return task.getIdent() == tIdent; });
 }
-
-// bool Project::containsTask(const std::string &tIdent) const noexcept
-// {
-//     return std::any_of(tasks.begin(), tasks.end(),
-//                        [&tIdent](const Task &task)
-//                        { return task.getIdent() == tIdent; });
-// }
 
 const TaskContainer &Project::getTasks() const noexcept
 {
