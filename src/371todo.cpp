@@ -80,178 +80,6 @@ int App::run(int argc, char *argv[])
   return 0;
 }
 
-void App::handleJsonAction(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string json = getJSON(tlObj);
-  std::cout << json << std::endl;
-}
-
-void App::handleCreateAction(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  try
-  {
-    if (args.count("project"))
-    {
-      createProject(args, tlObj);
-    }
-    if (args.count("task"))
-    {
-      createTask(args, tlObj);
-    }
-    if (args.count("tag"))
-    {
-      createTag(args, tlObj);
-    }
-  }
-  catch (const std::exception &e)
-  {
-    std::cerr << "Error: " << e.what() << std::endl;
-  }
-}
-void App::createProject(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string projectIdent = args["project"].as<std::string>();
-  tlObj.newProject(projectIdent);
-}
-
-void App::createTask(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string projectIdent = args["project"].as<std::string>();
-  std::string taskIdent = args["task"].as<std::string>();
-  Project &project = tlObj.getProject(projectIdent);
-  project.newTask(taskIdent);
-}
-
-void App::createTag(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string projectIdent = args["project"].as<std::string>();
-  std::string taskIdent = args["task"].as<std::string>();
-  std::string tagIdent = args["tag"].as<std::string>();
-  Project &project = tlObj.getProject(projectIdent);
-  Task &task = project.getTask(taskIdent);
-  task.addTag(tagIdent);
-}
-
-void App::handleDeleteAction(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  try
-  {
-    if (args.count("tag"))
-    {
-      handleDeleteTag(args, tlObj);
-    }
-    else if (args.count("task"))
-    {
-      handleDeleteTask(args, tlObj);
-    }
-    else if (args.count("project"))
-    {
-      handleDeleteProject(args, tlObj);
-    }
-    else
-    {
-      throw std::invalid_argument("Missing required arguments for delete action");
-    }
-  }
-  catch (const std::exception &e)
-  {
-    std::cerr << "Error!!!!: " << e.what() << std::endl;
-  }
-}
-
-void App::handleDeleteProject(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string projectIdent = args["project"].as<std::string>();
-  tlObj.deleteProject(projectIdent);
-}
-
-void App::handleDeleteTask(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string projectIdent = args["project"].as<std::string>();
-  std::string taskIdent = args["task"].as<std::string>();
-  Project &project = tlObj.getProject(projectIdent);
-  project.deleteTask(taskIdent);
-}
-
-void App::handleDeleteTag(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string projectIdent = args["project"].as<std::string>();
-  std::string taskIdent = args["task"].as<std::string>();
-  std::string tagIdent = args["tag"].as<std::string>();
-  Project &project = tlObj.getProject(projectIdent);
-  Task &task = project.getTask(taskIdent);
-  task.deleteTag(tagIdent);
-}
-
-void App::handleUpdateAction(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  try
-  {
-    if (args.count("project"))
-    {
-      updateProject(args, tlObj);
-    }
-    if (args.count("task"))
-    {
-      updateTask(args, tlObj);
-    }
-    if (args.count("tag"))
-    {
-      updateTag(args, tlObj);
-    }
-  }
-  catch (const std::exception &e)
-  {
-    std::cerr << "Error: " << e.what() << std::endl;
-  }
-}
-
-void App::updateProject(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string projectIdent = args["project"].as<std::string>();
-  Project &project = tlObj.getProject(projectIdent);
-
-  if (args.count("project-name"))
-  {
-    std::string newName = args["project-name"].as<std::string>();
-    project.setIdent(newName);
-  }
-}
-
-void App::updateTask(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string projectIdent = args["project"].as<std::string>();
-  std::string taskIdent = args["task"].as<std::string>();
-  Project &project = tlObj.getProject(projectIdent);
-  Task &task = project.getTask(taskIdent);
-
-  if (args.count("task-name"))
-  {
-    std::string newName = args["task-name"].as<std::string>();
-    task.setIdent(newName);
-  }
-  if (args.count("completed"))
-  {
-    bool completed = args["completed"].as<bool>();
-    task.setComplete(completed);
-  }
-}
-
-void App::updateTag(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string projectIdent = args["project"].as<std::string>();
-  std::string taskIdent = args["task"].as<std::string>();
-  std::string tagIdent = args["tag"].as<std::string>();
-  Project &project = tlObj.getProject(projectIdent);
-  Task &task = project.getTask(taskIdent);
-
-  if (task.containsTag(tagIdent))
-  {
-
-    task.deleteTag(tagIdent);
-  }
-}
-
 // Create a cxxopts instance. You do not need to modify this function.
 //
 // Example:
@@ -440,5 +268,261 @@ std::string App::getJSON(TodoList &tlObj, const std::string &p,
   else
   {
     return "";
+  }
+}
+
+void App::handleJsonAction(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  std::string tagIdent = args["tag"].as<std::string>();
+  // Project &project = tlObj.getProject(projectIdent);
+  // Task &task = project.getTask(taskIdent);
+  try
+  {
+    if (args.count("tag"))
+    {
+      handleJsonTag(args, tlObj);
+    }
+    else if (args.count("task"))
+    {
+      handleJsonTask(args, tlObj);
+    }
+    else if (args.count("project"))
+    {
+      handleJsonProject(args, tlObj);
+    }
+    else
+    {
+      handleJsonTodoList(args, tlObj);
+    }
+  }
+  catch (const std::exception &e)
+  {
+    std::cerr << "Error!!!!: " << e.what() << std::endl;
+  }
+}
+
+void App::handleJsonTag(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  std::string tagIdent = args["tag"].as<std::string>();
+  std::string tagJson = getJSON(tlObj, projectIdent, taskIdent, tagIdent);
+
+  if (!tagJson.empty())
+  {
+    std::cout << tagJson << std::endl;
+  }
+  else
+  {
+    std::cerr << "Tag not found!" << std::endl;
+  }
+}
+
+void App::handleJsonTask(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  std::string taskJson = getJSON(tlObj, projectIdent);
+
+  if (!taskJson.empty())
+  {
+    std::cout << taskJson << std::endl;
+  }
+  else
+  {
+    std::cerr << "Task not found!" << std::endl;
+  }
+}
+
+void App::handleJsonProject(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string ProjectJson = getJSON(tlObj, projectIdent);
+
+  if (!ProjectJson.empty())
+  {
+    std::cout << ProjectJson << std::endl;
+  }
+  else
+  {
+    std::cerr << "Project not found!" << std::endl;
+  }
+}
+
+void App::handleJsonTodoList(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+
+  std::string TodoList = getJSON(tlObj);
+  std::cout << TodoList << std::endl;
+}
+
+void App::handleCreateAction(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  try
+  {
+    if (args.count("project"))
+    {
+      createProject(args, tlObj);
+    }
+    if (args.count("task"))
+    {
+      createTask(args, tlObj);
+    }
+    if (args.count("tag"))
+    {
+      createTag(args, tlObj);
+    }
+  }
+  catch (const std::exception &e)
+  {
+    std::cerr << "Error: " << e.what() << std::endl;
+  }
+}
+void App::createProject(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  tlObj.newProject(projectIdent);
+}
+
+void App::createTask(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  project.newTask(taskIdent);
+}
+
+void App::createTag(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  std::string tagIdent = args["tag"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  Task &task = project.getTask(taskIdent);
+  task.addTag(tagIdent);
+}
+
+void App::handleDeleteAction(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  try
+  {
+    if (args.count("tag"))
+    {
+      handleDeleteTag(args, tlObj);
+    }
+    else if (args.count("task"))
+    {
+      handleDeleteTask(args, tlObj);
+    }
+    else if (args.count("project"))
+    {
+      handleDeleteProject(args, tlObj);
+    }
+    else
+    {
+      throw std::invalid_argument("Missing required arguments for delete action");
+    }
+  }
+  catch (const std::exception &e)
+  {
+    std::cerr << "Error!!!!: " << e.what() << std::endl;
+  }
+}
+
+void App::handleDeleteProject(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  tlObj.deleteProject(projectIdent);
+}
+
+void App::handleDeleteTask(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  project.deleteTask(taskIdent);
+}
+
+void App::handleDeleteTag(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  std::string tagIdent = args["tag"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  Task &task = project.getTask(taskIdent);
+  task.deleteTag(tagIdent);
+}
+
+void App::handleUpdateAction(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  try
+  {
+    if (args.count("project"))
+    {
+      updateProject(args, tlObj);
+    }
+    if (args.count("task"))
+    {
+      updateTask(args, tlObj);
+    }
+    if (args.count("tag"))
+    {
+      updateTag(args, tlObj);
+    }
+  }
+  catch (const std::exception &e)
+  {
+    std::cerr << "Error: " << e.what() << std::endl;
+  }
+}
+
+void App::updateProject(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+
+  if (args.count("project-name"))
+  {
+    std::string newName = args["project-name"].as<std::string>();
+    project.setIdent(newName);
+  }
+}
+
+void App::updateTask(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  Task &task = project.getTask(taskIdent);
+
+  if (args.count("task-name"))
+  {
+    std::string newName = args["task-name"].as<std::string>();
+    task.setIdent(newName);
+  }
+  if (args.count("completed"))
+  {
+    bool completed = args["completed"].as<bool>();
+    task.setComplete(completed);
+  }
+}
+
+void App::updateTag(const cxxopts::ParseResult &args, TodoList &tlObj)
+{
+  std::string projectIdent = args["project"].as<std::string>();
+  std::string taskIdent = args["task"].as<std::string>();
+  std::string tagIdent = args["tag"].as<std::string>();
+  Project &project = tlObj.getProject(projectIdent);
+  Task &task = project.getTask(taskIdent);
+
+  if (task.containsTag(tagIdent))
+  {
+
+    task.deleteTag(tagIdent);
   }
 }
