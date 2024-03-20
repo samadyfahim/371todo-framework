@@ -268,39 +268,44 @@ std::string App::getJSON(TodoList &tlObj, const std::string &p,
   if (tObj.containsTag(tag))
   {
     std::cout << tag << std::endl;
-    return tag;
+    exit(0);
   }
   else
   {
-    return "";
+    exit(1);
   }
 }
+
 
 void App::handleJsonAction(const cxxopts::ParseResult &args, TodoList &tlObj)
 {
   try
   {
-    std::string projectIdent = args["project"].as<std::string>();
 
-    if (args.count("tag"))
+    if (args.count("project"))
     {
-      std::string taskIdent = args["task"].as<std::string>();
-      std::string tagIdent = args["tag"].as<std::string>();
-      getJSON(tlObj, projectIdent, taskIdent, tagIdent);
-    }
-    else if (args.count("task"))
-    {
-      std::string taskIdent = args["task"].as<std::string>();
-      getJSON(tlObj, projectIdent, taskIdent);
-    }
-    else if (args.count("project"))
-    {
-      getJSON(tlObj, projectIdent);
-    }
-    else
+      std::string projectIdent = args["project"].as<std::string>();
+
+      if (args.count("task"))
+      {
+        std::string taskIdent = args["task"].as<std::string>();
+
+        if (args.count("tag"))
+        {
+          std::string tagIdent = args["tag"].as<std::string>();
+          getJSON(tlObj, projectIdent, taskIdent, tagIdent);
+        } else {
+          getJSON(tlObj, projectIdent, taskIdent);
+        }
+      } else
+      {
+        getJSON(tlObj, projectIdent);
+      }
+    }else
     {
       getJSON(tlObj);
     }
+
   }
   catch (const std::exception &e)
   {
@@ -319,11 +324,11 @@ void App::getCreateAction(TodoList &tlObj, const std::string &p, const std::stri
   project.newTask(t);
 }
 void App::getCreateAction(TodoList &tlObj, const std::string &p, const std::string &t,
-                          const std::string &tag)
+                          const std::string &tags)
 {
   Project &project = tlObj.getProject(p);
   Task &task = project.getTask(t);
-  task.addTag(tag);
+  task.addTag(tags);
 }
 
 void App::getUpdateAction(TodoList &tlObj, const std::string &p)
@@ -381,27 +386,29 @@ void App::handleCreateAction(const cxxopts::ParseResult &args, TodoList &tlObj)
 {
   try
   {
-    std::string projectIdent = args["project"].as<std::string>();
-
+    if (args.count("project"))
+    {
+      std::string projectIdent = args["project"].as<std::string>();
+      getCreateAction(tlObj, projectIdent);
+    }
+    if (args.count("task"))
+    {
+      std::string projectIdent = args["project"].as<std::string>();
+      std::string taskIdent = args["task"].as<std::string>();
+      getCreateAction(tlObj, projectIdent, taskIdent);
+    }
     if (args.count("tag"))
     {
+      std::string projectIdent = args["project"].as<std::string>();
       std::string taskIdent = args["task"].as<std::string>();
       std::string tagIdent = args["tag"].as<std::string>();
       getCreateAction(tlObj, projectIdent, taskIdent, tagIdent);
     }
-    else if (args.count("task"))
-    {
-      std::string taskIdent = args["task"].as<std::string>();
-      getCreateAction(tlObj, projectIdent, taskIdent);
-    }
-    else if (args.count("project"))
-    {
-      getCreateAction(tlObj, projectIdent);
-    }
+    
   }
   catch (const std::exception &e)
   {
-    std::cerr << "Error: missing project argument(s)." << std::endl;
+    std::cerr << "Error: missing project, task, tag, due, completed/incomplete argument(s)." << std::endl;
   }
 }
 
@@ -409,34 +416,47 @@ void App::handleUpdateAction(const cxxopts::ParseResult &args, TodoList &tlObj)
 {
   try
   {
-    std::string projectIdent = args["project"].as<std::string>();
-    std::string taskIdent = args["task"].as<std::string>();
-    std::string tagIdent = args["tag"].as<std::string>();
-    std::string dueIdent = args["due"].as<std::string>();
-    std::string completedIdent = args["completed"].as<std::string>();
-    std::string incompleteIdent = args["incomplete"].as<std::string>();
-
     if (args.count("incomplete"))
     {
+      std::string projectIdent = args["project"].as<std::string>();
+      std::string taskIdent = args["task"].as<std::string>();
+      std::string tagIdent = args["tag"].as<std::string>();
+      std::string dueIdent = args["due"].as<std::string>();
+      std::string completedIdent = args["completed"].as<std::string>();
+      std::string incompleteIdent = args["incomplete"].as<std::string>();
 
       getUpdateAction(tlObj, projectIdent, taskIdent, dueIdent, incompleteIdent);
     }
-    else if (args.count("completed"))
+    if (args.count("completed"))
     {
+      std::string projectIdent = args["project"].as<std::string>();
+      std::string taskIdent = args["task"].as<std::string>();
+      std::string tagIdent = args["tag"].as<std::string>();
+      std::string dueIdent = args["due"].as<std::string>();
+      std::string completedIdent = args["completed"].as<std::string>();
       getUpdateAction(tlObj, projectIdent, taskIdent, dueIdent, completedIdent);
     }
 
-    else if (args.count("due"))
+    if (args.count("due"))
     {
+      std::string projectIdent = args["project"].as<std::string>();
+      std::string taskIdent = args["task"].as<std::string>();
+      std::string tagIdent = args["tag"].as<std::string>();
+      std::string dueIdent = args["due"].as<std::string>();
       getUpdateAction(tlObj, projectIdent, taskIdent, tagIdent, dueIdent);
     }
 
     else if (args.count("task"))
     {
+      std::string projectIdent = args["project"].as<std::string>();
+      std::string taskIdent = args["task"].as<std::string>();
+      std::string tagIdent = args["tag"].as<std::string>();
       getUpdateAction(tlObj, projectIdent, taskIdent);
     }
     else if (args.count("project"))
     {
+      std::string projectIdent = args["project"].as<std::string>();
+      std::string taskIdent = args["task"].as<std::string>();
       getUpdateAction(tlObj, projectIdent);
     }
   }

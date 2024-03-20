@@ -309,23 +309,13 @@ nlohmann::json TodoList::json() const
     nlohmann::json jsonData;
     for (const auto &project : projects)
     {
-        nlohmann::json projectData;
-        for (const auto &task : project.getTasks())
-        {
-            nlohmann::json taskData;
-            taskData["completed"] = task.isComplete();
-            taskData["dueDate"] = task.getDueDate().str();
-            for (const std::string &tag : task.getTags())
-            {
-                taskData["tags"].push_back(tag);
-            }
-            projectData[task.getIdent()] = taskData;
-        }
-        jsonData[project.getIdent()] = projectData;
+        jsonData[project.getIdent()] = project.json();
     }
 
     return jsonData;
 }
+
+
 
 void TodoList::parseToDoList(const nlohmann::json &jsonData)
 {

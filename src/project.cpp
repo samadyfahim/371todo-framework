@@ -181,11 +181,10 @@ bool operator==(const Project &c1, const Project &c2)
 nlohmann::json Project::json() const
 {
     nlohmann::json projectJson;
-    projectJson["identifier"] = ident;
 
     for (const auto &task : tasks)
     {
-        projectJson["tasks"].push_back(std::move(task.json()));
+        projectJson[task.getIdent()] = task.json();
     }
 
     return projectJson;

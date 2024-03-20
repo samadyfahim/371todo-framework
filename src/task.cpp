@@ -192,12 +192,12 @@ std::string Task::str() const
 nlohmann::json Task::json() const
 {
     nlohmann::json taskJson;
-    taskJson["identifier"] = ident;
     taskJson["dueDate"] = dueDate.str();
     taskJson["completed"] = completed;
+    
     for (const std::string &tag : tags)
     {
-        taskJson["tags"].emplace_back(tag);
+        taskJson["tags"].push_back(tag);
     }
 
     return taskJson;
