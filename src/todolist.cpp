@@ -341,6 +341,6 @@ void TodoList::parseToDoList(const nlohmann::json &jsonData)
     }
     catch (const std::exception &e)
     {
-        throw std::runtime_error("Error parsing TodoList data: " + std::string(e.what()));
+        throw std::runtime_error("Error parsing TodoList adata: " + std::string(e.what()));
     }
 }

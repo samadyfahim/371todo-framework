@@ -93,6 +93,10 @@ namespace App
     void getUpdateAction(TodoList &tl, const std::string &p, const std::string &t);
     void getUpdateAction(TodoList &tl, const std::string &p, const std::string &task,
                          const std::string &tag);
+    void getUpdateAction(TodoList &tl, const std::string &p, const std::string &task,
+                         const std::string &tag, const std::string &due);
+    void getUpdateAction(TodoList &tl, const std::string &p, const std::string &task,
+                         const std::string &tag, const std::string &d, const std::string &c);
 
     void getDeleteAction(TodoList &tl);
     void getDeleteAction(TodoList &tl, const std::string &p);
