@@ -34,23 +34,27 @@
 SCENARIO("The database and action program arguments can be parsed correctly "
          "such that a file can be opened, read, parsed, data deleted, and "
          "written to",
-         "[args]") {
+         "[args]")
+{
 
   const std::string filePath = "./tests/testdatabasealt.json";
 
-  auto fileExists = [](const std::string &path) {
+  auto fileExists = [](const std::string &path)
+  {
     return std::ifstream(path).is_open();
   };
 
   auto writeFileContents = [](const std::string &path,
-                              const std::string &contents) {
+                              const std::string &contents)
+  {
     // Not a robust way to do this, but here it doesn't matter so much, if it
     // goes wrong we'll fail the test anyway…
     std::ofstream f{path};
     f << contents;
   };
 
-  GIVEN("a valid path to a reset database JSON file") {
+  GIVEN("a valid path to a reset database JSON file")
+  {
 
     // Reset the file...
     REQUIRE(fileExists(filePath));
@@ -69,11 +73,13 @@ SCENARIO("The database and action program arguments can be parsed correctly "
     const std::string testTag = "programming";
 
     WHEN("the db program argument is '" + filePath +
-         "', the action program argument is 'delete'") {
+         "', the action program argument is 'delete'")
+    {
 
       AND_WHEN("and the project program argument is '" + testProject +
                "', the task program argument is '" + testTask +
-               "', and the tag program argument is '" + testTag + "'") {
+               "', and the tag program argument is '" + testTag + "'")
+      {
 
         Argv argvObj({"test", "--db", filePath.c_str(), "--action", "delete",
                       "--project", testProject.c_str(), "--task",
@@ -82,18 +88,21 @@ SCENARIO("The database and action program arguments can be parsed correctly "
         auto **argv = argvObj.argv();
         auto argc = argvObj.argc();
 
-        THEN("no exception is thrown") {
+        THEN("no exception is thrown")
+        {
 
           REQUIRE_NOTHROW(App::run(argc, argv));
 
           AND_WHEN(
-              "loading the saved file into a new TodoList object will work") {
+              "loading the saved file into a new TodoList object will work")
+          {
 
             TodoList tlObj1{};
             REQUIRE(tlObj1.size() == 0);
             REQUIRE_NOTHROW(tlObj1.load(filePath));
 
-            THEN("the new TodoList will not contain the tag") {
+            THEN("the new TodoList will not contain the tag")
+            {
 
               REQUIRE_FALSE(tlObj1.getProject(testProject)
                                 .getTask(testTask)
@@ -108,7 +117,8 @@ SCENARIO("The database and action program arguments can be parsed correctly "
       } // AND_WHEN
 
       AND_WHEN("and the project program argument is '" + testProject +
-               "', the task program argument is '" + testTask + "'") {
+               "', the task program argument is '" + testTask + "'")
+      {
 
         Argv argvObj({"test", "--db", filePath.c_str(), "--action", "delete",
                       "--project", testProject.c_str(), "--task",
@@ -117,18 +127,21 @@ SCENARIO("The database and action program arguments can be parsed correctly "
         auto **argv = argvObj.argv();
         auto argc = argvObj.argc();
 
-        THEN("no exception is thrown") {
+        THEN("no exception is thrown")
+        {
 
           REQUIRE_NOTHROW(App::run(argc, argv));
 
           AND_WHEN(
-              "loading the saved file into a new TodoList object will work") {
+              "loading the saved file into a new TodoList object will work")
+          {
 
             TodoList tlObj1{};
             REQUIRE(tlObj1.size() == 0);
             REQUIRE_NOTHROW(tlObj1.load(filePath));
 
-            THEN("the new TodoList will not contain the task") {
+            THEN("the new TodoList will not contain the task")
+            {
 
               REQUIRE_THROWS_AS(
                   tlObj1.getProject(testProject).getTask(testTask),
@@ -142,7 +155,8 @@ SCENARIO("The database and action program arguments can be parsed correctly "
 
       } // AND_WHEN
 
-      AND_WHEN("and the project program argument is '" + testProject + "'") {
+      AND_WHEN("and the project program argument is '" + testProject + "'")
+      {
 
         Argv argvObj({"test", "--db", filePath.c_str(), "--action", "delete",
                       "--project", testProject.c_str()});
@@ -150,18 +164,21 @@ SCENARIO("The database and action program arguments can be parsed correctly "
         auto **argv = argvObj.argv();
         auto argc = argvObj.argc();
 
-        THEN("no exception is thrown") {
+        THEN("no exception is thrown")
+        {
 
           REQUIRE_NOTHROW(App::run(argc, argv));
 
           AND_WHEN(
-              "loading the saved file into a new TodoList object will work") {
+              "loading the saved file into a new TodoList object will work")
+          {
 
             TodoList tlObj1{};
             REQUIRE(tlObj1.size() == 0);
             REQUIRE_NOTHROW(tlObj1.load(filePath));
 
-            THEN("the new TodoList will not contain the project") {
+            THEN("the new TodoList will not contain the project")
+            {
 
               REQUIRE_THROWS_AS(tlObj1.getProject(testProject),
                                 std::out_of_range);

@@ -66,12 +66,11 @@ void Project::setIdent(std::string pIdent) noexcept
 
 Task &Project::newTask(const std::string &tIdent)
 {
-    auto it = findTask(tIdent);
-    if (it != tasks.end())
+    try
     {
-        return *it;
+        return getTask(tIdent);
     }
-    else
+    catch (const std::exception &e)
     {
         Task task(tIdent);
         tasks.push_back(std::move(task));
@@ -157,7 +156,7 @@ bool Project::deleteTask(const std::string &tIdent)
     }
     else
     {
-        throw std::out_of_range("Task not found");
+        throw std::out_of_range("The Task not found");
         return false;
     }
 }
@@ -186,7 +185,7 @@ nlohmann::json Project::json() const
 
     for (const auto &task : tasks)
     {
-        projectJson["tasks"].emplace_back(task.json());
+        projectJson["tasks"].push_back(std::move(task.json()));
     }
 
     return projectJson;
@@ -229,7 +228,7 @@ void Project::parseJsonProject(const nlohmann::json &jsonData)
 {
     try
     {
-        for (auto it = jsonData.begin(); it != jsonData.end(); ++it)
+        for (auto it : jsonData.items())
 
         {
             const std::string &taskName = it.key();
