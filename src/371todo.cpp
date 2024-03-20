@@ -338,27 +338,20 @@ void App::getUpdateAction(TodoList &tlObj, const std::string &p, const std::stri
   Task &task = project.getTask(t);
   task.setIdent(t);
 }
-void App::getUpdateAction(TodoList &tlObj, const std::string &p, const std::string &t,
-                          const std::string &tag)
-{
-  Project &project = tlObj.getProject(p);
-  Task &task = project.getTask(t);
-  task.addTag(tag);
-}
 
 void App::getUpdateAction(TodoList &tlObj, const std::string &p, const std::string &t,
-                          const std::string &tag, const std::string &d)
+                         const std::string &d)
 {
   Project &project = tlObj.getProject(p);
   Task &task = project.getTask(t);
-  Date date = task.getDueDate();
-  task.setDueDate(date);
+  task.getDueDate().setDateFromString(d);
 }
 void App::getUpdateAction(TodoList &tlObj, const std::string &p, const std::string &t,
-                          const std::string &tag, const std::string &due, const std::string &completed)
+                         const std::string &d, const std::string &completed)
 {
   Project &project = tlObj.getProject(p);
   Task &task = project.getTask(t);
+  task.getDueDate().setDateFromString(d);
 
   if (task.isComplete())
   {
@@ -438,10 +431,6 @@ void App::handleUpdateAction(const cxxopts::ParseResult &args, TodoList &tlObj)
       getUpdateAction(tlObj, projectIdent, taskIdent, tagIdent, dueIdent);
     }
 
-    else if (args.count("tag"))
-    {
-      getUpdateAction(tlObj, projectIdent, taskIdent, tagIdent);
-    }
     else if (args.count("task"))
     {
       getUpdateAction(tlObj, projectIdent, taskIdent);

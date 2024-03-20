@@ -59,22 +59,6 @@ namespace App
     void handleCreateAction(const cxxopts::ParseResult &args, TodoList &tlObj);
     void handleUpdateAction(const cxxopts::ParseResult &args, TodoList &tlObj);
 
-    void handleJsonTag(const cxxopts::ParseResult &args, TodoList &tlObj);
-    void handleJsonTask(const cxxopts::ParseResult &args, TodoList &tlObj);
-    void handleJsonProject(const cxxopts::ParseResult &args, TodoList &tlObj);
-    void handleJsonTodoList(const cxxopts::ParseResult &args, TodoList &tlObj);
-
-    void createProject(const cxxopts::ParseResult &args, TodoList &tlObj);
-    void createTask(const cxxopts::ParseResult &args, TodoList &tlObj);
-    void createTag(const cxxopts::ParseResult &args, TodoList &tlObj);
-
-    void handleDeleteProject(const cxxopts::ParseResult &args, TodoList &tlObj);
-    void handleDeleteTag(const cxxopts::ParseResult &args, TodoList &tlObj);
-    void handleDeleteTask(const cxxopts::ParseResult &args, TodoList &tlObj);
-
-    void updateProject(const cxxopts::ParseResult &args, TodoList &tlObj);
-    void updateTask(const cxxopts::ParseResult &args, TodoList &tlObj);
-    void updateTag(const cxxopts::ParseResult &args, TodoList &tlObj);
 
     std::string getJSON(TodoList &tl);
     std::string getJSON(TodoList &tl, const std::string &p);
@@ -94,9 +78,9 @@ namespace App
     void getUpdateAction(TodoList &tl, const std::string &p, const std::string &task,
                          const std::string &tag);
     void getUpdateAction(TodoList &tl, const std::string &p, const std::string &task,
-                         const std::string &tag, const std::string &due);
+                         const std::string &due);
     void getUpdateAction(TodoList &tl, const std::string &p, const std::string &task,
-                         const std::string &tag, const std::string &d, const std::string &c);
+                         const std::string &d, const std::string &c);
 
     void getDeleteAction(TodoList &tl);
     void getDeleteAction(TodoList &tl, const std::string &p);
