@@ -49,10 +49,6 @@ namespace App
         UPDATE
     };
 
-    bool hasTag;
-    bool hasTask;
-    bool hasproject;
-
     int run(int argc, char *argv[]);
 
     cxxopts::Options cxxoptsSetup();

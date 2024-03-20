@@ -33,13 +33,15 @@
 // by Björn Pollex
 // via https://stackoverflow.com/a/5419388
 // licensed under CC BY-SA 3.0.
-class CoutRedirect {
+class CoutRedirect
+{
 private:
   std::streambuf *old;
 
 public:
   CoutRedirect(std::streambuf *new_buffer)
-      : old(std::cout.rdbuf(new_buffer)) { /* do nothing */
+      : old(std::cout.rdbuf(new_buffer))
+  { /* do nothing */
   }
 
   ~CoutRedirect() { std::cout.rdbuf(old); }
@@ -48,23 +50,27 @@ public:
 SCENARIO("The database and action program arguments can be parsed correctly "
          "such that a file can be opened, json output printed, parsed, and "
          "output to stdout",
-         "[args]") {
+         "[args]")
+{
 
   const std::string filePath = "./tests/testdatabasealt.json";
 
-  auto fileExists = [](const std::string &path) {
+  auto fileExists = [](const std::string &path)
+  {
     return std::ifstream(path).is_open();
   };
 
   auto writeFileContents = [](const std::string &path,
-                              const std::string &contents) {
+                              const std::string &contents)
+  {
     // Not a robust way to do this, but here it doesn't matter so much, if it
     // goes wrong we'll fail the test anyway…
     std::ofstream f{path};
     f << contents;
   };
 
-  GIVEN("a valid path to a reset database JSON file") {
+  GIVEN("a valid path to a reset database JSON file")
+  {
 
     // Reset the file...
     REQUIRE(fileExists(filePath));
@@ -80,7 +86,8 @@ SCENARIO("The database and action program arguments can be parsed correctly "
         "\"uni\", \"c++\", \"programming\", \"standard library\" ] } } }"));
 
     WHEN("the db program argument is '" + filePath +
-         "' and the action program argument is 'json'") {
+         "' and the action program argument is 'json'")
+    {
 
       Argv argvObj({"test", "--db", filePath.c_str(), "--action", "json"});
       auto **argv = argvObj.argv();
@@ -89,7 +96,8 @@ SCENARIO("The database and action program arguments can be parsed correctly "
       std::stringstream buffer;
       CoutRedirect originalBuffer{buffer.rdbuf()};
 
-      THEN("the expected JSON output is printed to stdout") {
+      THEN("the expected JSON output is printed to stdout")
+      {
 
         REQUIRE_NOTHROW(App::run(argc, argv));
 
@@ -111,3 +119,63 @@ SCENARIO("The database and action program arguments can be parsed correctly "
   } // GIVEN
 
 } // SCENARIO
+
+TEST_CASE("Test JSON representation of a specific tag in TodoList object", "[getJSON]")
+{
+  // Initialize a TodoList object
+  TodoList tlObj;
+
+  // Add projects, tasks, and tags to the TodoList object
+  // For example:
+  tlObj.newProject("CSC307");
+  tlObj.getProject("CSC307").newTask("Write Mobile App");
+  tlObj.getProject("CSC307").getTask("Write Mobile App").addTag("uni");
+  tlObj.getProject("CSC307").getTask("Write Mobile App").addTag("programming");
+  tlObj.getProject("CSC307").getTask("Write Mobile App").addTag("android");
+
+  // Define the tag you want to retrieve
+  std::string projectIdent = "CSC307";
+  std::string taskIdent = "Write Mobile App";
+  std::string tagIdent = "programming";
+
+  // Redirect stdout to a stringstream for capturing the output
+  std::stringstream buffer;
+  CoutRedirect redirect(buffer.rdbuf());
+
+  // Call the function under test
+  std::string tagJson = App::getJSON(tlObj, projectIdent, taskIdent, tagIdent);
+
+  // Remove leading and trailing quotation marks from the output
+  if (!tagJson.empty() && tagJson.front() == '"' && tagJson.back() == '"')
+  {
+    tagJson = tagJson.substr(1, tagJson.size() - 2);
+  }
+
+  // Validate the output
+  REQUIRE(tagJson == "programming");
+
+  // Optional: Validate the content of stdout
+  std::string output = buffer.str();
+  REQUIRE(output == "programming\n");
+}
+
+// Define the test case
+TEST_CASE("Test JSON representation of a specific task in TodoList object", "[getJSON]")
+{
+  // Initialize a TodoList object
+  TodoList tlObj;
+
+  // Add projects, tasks, and tags to the TodoList object
+  tlObj.newProject("CSC307");
+  tlObj.getProject("CSC307").newTask("Write Mobile App");
+
+  // Define the project and task identifiers
+  std::string projectIdent = "CSC307";
+  std::string taskIdent = "Write Mobile App";
+
+  // Call the function under test
+  std::string taskJson = App::getJSON(tlObj, projectIdent, taskIdent);
+
+  // Validate the output
+  REQUIRE(taskJson == "{\"completed\":false,\"dueDate\":\"\",\"tags\":[]}");
+}

@@ -236,6 +236,7 @@ std::string App::getJSON(TodoList &tlObj, const std::string &p,
   // Only uncomment this once you have implemented the functions used!
   auto pObj = tlObj.getProject(p);
   const auto tObj = pObj.getTask(t);
+
   return tObj.str();
 }
 
@@ -263,6 +264,7 @@ std::string App::getJSON(TodoList &tlObj, const std::string &p,
   const auto tObj = pObj.getTask(task);
   if (tObj.containsTag(tag))
   {
+    std::cout << tag << std::endl;
     return tag;
   }
   else
@@ -273,86 +275,52 @@ std::string App::getJSON(TodoList &tlObj, const std::string &p,
 
 void App::handleJsonAction(const cxxopts::ParseResult &args, TodoList &tlObj)
 {
-
-  std::string projectIdent = args["project"].as<std::string>();
-  std::string taskIdent = args["task"].as<std::string>();
-  std::string tagIdent = args["tag"].as<std::string>();
-  // Project &project = tlObj.getProject(projectIdent);
-  // Task &task = project.getTask(taskIdent);
   try
   {
+    std::string projectIdent = args["project"].as<std::string>();
+
     if (args.count("tag"))
     {
-      handleJsonTag(args, tlObj);
+      std::string taskIdent = args["task"].as<std::string>();
+      std::string tagIdent = args["tag"].as<std::string>();
+      getJSON(tlObj, projectIdent, taskIdent, tagIdent);
     }
     else if (args.count("task"))
     {
-      handleJsonTask(args, tlObj);
+      std::string taskIdent = args["task"].as<std::string>();
+      getJSON(tlObj, projectIdent, taskIdent);
     }
     else if (args.count("project"))
     {
-      handleJsonProject(args, tlObj);
+      getJSON(tlObj, projectIdent);
     }
     else
     {
-      handleJsonTodoList(args, tlObj);
+      getJSON(tlObj);
     }
   }
   catch (const std::exception &e)
   {
-    std::cerr << "Error!!!!: " << e.what() << std::endl;
+    std::cerr << "Error: missing project argument(s)." << std::endl;
   }
 }
 
-void App::handleJsonTag(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-  std::string projectIdent = args["project"].as<std::string>();
-  std::string taskIdent = args["task"].as<std::string>();
-  std::string tagIdent = args["tag"].as<std::string>();
-  std::string tagJson = getJSON(tlObj, projectIdent, taskIdent, tagIdent);
+// void App::handleJsonTag(const cxxopts::ParseResult &args, TodoList &tlObj)
+// {
+//   std::string projectIdent = args["project"].as<std::string>();
+//   std::string taskIdent = args["task"].as<std::string>();
+//   std::string tagIdent = args["tag"].as<std::string>();
+//   std::string tagJson = getJSON(tlObj, projectIdent, taskIdent, tagIdent);
 
-  if (!tagJson.empty())
-  {
-    std::cout << tagJson << std::endl;
-  }
-  else
-  {
-    std::cerr << "Tag not found!" << std::endl;
-  }
-}
-
-void App::handleJsonTask(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-
-  std::string projectIdent = args["project"].as<std::string>();
-  std::string taskIdent = args["task"].as<std::string>();
-  std::string taskJson = getJSON(tlObj, projectIdent);
-
-  if (!taskJson.empty())
-  {
-    std::cout << taskJson << std::endl;
-  }
-  else
-  {
-    std::cerr << "Task not found!" << std::endl;
-  }
-}
-
-void App::handleJsonProject(const cxxopts::ParseResult &args, TodoList &tlObj)
-{
-
-  std::string projectIdent = args["project"].as<std::string>();
-  std::string ProjectJson = getJSON(tlObj, projectIdent);
-
-  if (!ProjectJson.empty())
-  {
-    std::cout << ProjectJson << std::endl;
-  }
-  else
-  {
-    std::cerr << "Project not found!" << std::endl;
-  }
-}
+//   if (!tagJson.empty())
+//   {
+//     std::cout << tagJson << std::endl;
+//   }
+//   else
+//   {
+//     std::cerr << "Tag not found!" << std::endl;
+//   }
+// }
 
 void App::handleJsonTodoList(const cxxopts::ParseResult &args, TodoList &tlObj)
 {
